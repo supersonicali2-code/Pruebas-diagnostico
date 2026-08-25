@@ -294,10 +294,6 @@
                     <input type="text" id="srv-name" placeholder="Ej: Servidor NVR No. 1" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
                 </div>
                 <div>
-                    <label class="block text-[11px] text-slate-300 font-medium mb-1">Dirección IP Servidor</label>
-                    <input type="text" id="srv-ip" placeholder="Ej: 192.168.10.100" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
-                </div>
-                <div>
                     <label class="block text-[11px] text-slate-300 font-medium mb-1">Sistema Operativo</label>
                     <input type="text" id="srv-os" placeholder="Ej: Windows 10 Pro LTSC" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
                 </div>
@@ -312,6 +308,38 @@
                 <div class="col-span-2">
                     <label class="block text-[11px] text-slate-300 font-medium mb-1">Licencia de Windows (Serial / Product Key)</label>
                     <input type="text" id="srv-win-license" placeholder="Ej: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white font-mono focus:outline-none focus:border-sky-400">
+                </div>
+                <div class="col-span-2 border-t border-slate-600 pt-2 space-y-2">
+                    <h3 class="text-[11px] font-bold text-sky-300 uppercase font-oswald">Configuración de Red del Servidor</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-medium mb-1">Dirección IP Servidor</label>
+                            <input type="text" id="srv-ip" placeholder="Ej: 192.168.10.100" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-medium mb-1">Máscara de Subred</label>
+                            <input type="text" id="srv-subnet" placeholder="Ej: 255.255.255.0" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-medium mb-1">Puerta de Enlace (Gateway)</label>
+                            <input type="text" id="srv-gateway" placeholder="Ej: 192.168.10.1" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-medium mb-1">DNS Primario / Secundario</label>
+                            <input type="text" id="srv-dns" placeholder="Ej: 8.8.8.8 / 1.1.1.1" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-medium mb-1">Tipo de Asignación IP</label>
+                            <select id="srv-ip-type" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white font-bold focus:outline-none">
+                                <option value="IP Fija" selected>IP Fija</option>
+                                <option value="DHCP">DHCP</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-medium mb-1">VLAN Asignada (si aplica)</label>
+                            <input type="text" id="srv-vlan" placeholder="Ej: VLAN 10 - Cámaras" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
+                        </div>
+                    </div>
                 </div>
                 <div class="col-span-2 border-t border-slate-600 pt-1"></div>
                 <div>
@@ -841,6 +869,99 @@
 
                         <div id="wrapper-mtu-extra" class="space-y-2 mt-2 w-full"></div>
                         <div class="flex justify-center"><button type="button" onclick="agregarMtuExtra()" class="w-full text-sky-300 bg-sky-500/10 hover:bg-sky-500/20 text-[9px] font-bold px-2 py-1 rounded transition">➕ Añadir Ruta MTU</button></div>
+                    </div>
+                </div>
+
+                <!-- PRUEBA 1.7 -->
+                <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
+                    </div>
+                    <h4 class="text-xs font-bold text-slate-200 mt-1 font-oswald">Prueba 1.7: Acceso Remoto y VPN</h4>
+                    <div class="text-[10px] text-slate-300 bg-slate-900/60 p-2 rounded border border-slate-800 space-y-1">
+                        <p>💡 <strong>Objetivo:</strong> Verificar que el sistema sea accesible fuera de la red local (celular con datos móviles, otra red).</p>
+                        <p>⚙️ <strong>Procedimiento:</strong> Configure la VPN (si aplica) y la redirección de puertos en el router. Cierre el WiFi del celular y pruebe el acceso desde la app móvil/web usando datos móviles.</p>
+                    </div>
+                    <div class="space-y-2 pt-1">
+                        <div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">VPN / IP Pública</label>
+                            <input type="text" id="val_ddns_domain" placeholder="Ej: VPN FortiClient / IP Pública: 200.1.2.3" class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-slate-300 mb-0.5">Puertos Redirigidos (Router)</label>
+                                <select id="val_port_forward" class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white font-bold focus:outline-none">
+                                    <option value="Sí" selected>Sí</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-300 mb-0.5">Estatus (Acceso Verificado)</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <label class="status-btn"><input type="radio" name="chk_remote_access_status" value="CORRECTO" checked class="sr-only"><span class="block text-center bg-[#122f4a] text-[10px] py-1.5 rounded font-bold text-emerald-400">CORRECTO</span></label>
+                                    <label class="status-btn"><input type="radio" name="chk_remote_access_status" value="FALLA" class="sr-only"><span class="block text-center bg-[#122f4a] text-[10px] py-1.5 rounded font-bold text-rose-400">FALLA</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="text" id="obs_remote_access" placeholder="Observaciones de acceso remoto..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
+                        <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
+                            <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
+                            <div class="flex items-center space-x-1.5 flex-1 justify-end">
+                                <span class="preview-status text-slate-400 italic truncate max-w-[80px]">Sin foto</span><div class="evidence-preview-grid grid grid-cols-3 gap-1 ml-1 max-w-[180px]"></div>
+                                <label class="bg-sky-600 hover:bg-sky-500 text-white px-2 py-1 rounded cursor-pointer font-bold transition">
+                                    📷 Cámara
+                                    <input type="file" accept="image/*" capture="environment" multiple class="sr-only" onchange="procesarFotoEvidencia(this)">
+                                </label>
+                                <label class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded cursor-pointer font-bold transition">
+                                    📁 Galería
+                                    <input type="file" accept="image/*" multiple class="sr-only" onchange="procesarFotoEvidencia(this)">
+                                </label>
+                                <input type="hidden" id="b64_remote_access" class="foto-base64-custom">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRUEBA 1.8 -->
+                <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
+                    </div>
+                    <h4 class="text-xs font-bold text-slate-200 mt-1 font-oswald">Prueba 1.8: Sincronización Horaria (NTP)</h4>
+                    <div class="text-[10px] text-slate-300 bg-slate-900/60 p-2 rounded border border-slate-800 space-y-1">
+                        <p>💡 <strong>Objetivo:</strong> Garantizar que la hora del sistema esté sincronizada — esto es crítico para que la evidencia grabada tenga validez cronológica.</p>
+                        <p>⚙️ <strong>Procedimiento:</strong> Verifique en Configuración de Windows → Fecha y hora → Sincronizar ahora, o el servidor NTP configurado en el sistema.</p>
+                    </div>
+                    <div class="space-y-2 pt-1">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-slate-300 mb-0.5">Servidor NTP Configurado</label>
+                                <input type="text" id="val_ntp_server" placeholder="Ej: time.windows.com" class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-300 mb-0.5">Estatus</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <label class="status-btn"><input type="radio" name="chk_ntp_status" value="CORRECTO" checked class="sr-only"><span class="block text-center bg-[#122f4a] text-[10px] py-1.5 rounded font-bold text-emerald-400">CORRECTO</span></label>
+                                    <label class="status-btn"><input type="radio" name="chk_ntp_status" value="FALLA" class="sr-only"><span class="block text-center bg-[#122f4a] text-[10px] py-1.5 rounded font-bold text-rose-400">FALLA</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="text" id="obs_ntp" placeholder="Observaciones de sincronización horaria..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
+                        <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
+                            <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
+                            <div class="flex items-center space-x-1.5 flex-1 justify-end">
+                                <span class="preview-status text-slate-400 italic truncate max-w-[80px]">Sin foto</span><div class="evidence-preview-grid grid grid-cols-3 gap-1 ml-1 max-w-[180px]"></div>
+                                <label class="bg-sky-600 hover:bg-sky-500 text-white px-2 py-1 rounded cursor-pointer font-bold transition">
+                                    📷 Cámara
+                                    <input type="file" accept="image/*" capture="environment" multiple class="sr-only" onchange="procesarFotoEvidencia(this)">
+                                </label>
+                                <label class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded cursor-pointer font-bold transition">
+                                    📁 Galería
+                                    <input type="file" accept="image/*" multiple class="sr-only" onchange="procesarFotoEvidencia(this)">
+                                </label>
+                                <input type="hidden" id="b64_ntp" class="foto-base64-custom">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1817,6 +1938,11 @@
                 srvIp: document.getElementById('srv-ip').value,
                 srvOs: document.getElementById('srv-os').value,
                 srvWinLicense: document.getElementById('srv-win-license').value,
+                srvSubnet: document.getElementById('srv-subnet').value,
+                srvGateway: document.getElementById('srv-gateway').value,
+                srvDns: document.getElementById('srv-dns').value,
+                srvIpType: document.getElementById('srv-ip-type').value,
+                srvVlan: document.getElementById('srv-vlan').value,
                 srvBrand: document.getElementById('srv-brand').value,
                 srvSerial: document.getElementById('srv-serial').value,
                 srvPurchaseDate: document.getElementById('srv-purchase-date').value,
@@ -1855,6 +1981,11 @@
                 if (data.srvIp) document.getElementById('srv-ip').value = data.srvIp;
                 if (data.srvOs) document.getElementById('srv-os').value = data.srvOs;
                 if (data.srvWinLicense) document.getElementById('srv-win-license').value = data.srvWinLicense;
+                if (data.srvSubnet) document.getElementById('srv-subnet').value = data.srvSubnet;
+                if (data.srvGateway) document.getElementById('srv-gateway').value = data.srvGateway;
+                if (data.srvDns) document.getElementById('srv-dns').value = data.srvDns;
+                if (data.srvIpType) document.getElementById('srv-ip-type').value = data.srvIpType;
+                if (data.srvVlan) document.getElementById('srv-vlan').value = data.srvVlan;
                 if (data.srvBrand) document.getElementById('srv-brand').value = data.srvBrand;
                 if (data.srvSerial) document.getElementById('srv-serial').value = data.srvSerial;
                 if (data.srvPurchaseDate) document.getElementById('srv-purchase-date').value = data.srvPurchaseDate;
@@ -2700,6 +2831,45 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-span-2 bg-slate-900 p-2.5 rounded border border-slate-800 space-y-2">
+                        <span class="text-[9px] font-bold text-amber-300 uppercase block">Seguridad y Verificaciones Adicionales</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[8px] text-slate-400 mb-0.5">Firmware Instalado</label>
+                                <input type="text" placeholder="Ej: V1.32" class="cam-firmware w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white text-[10px] focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[8px] text-slate-400 mb-0.5">¿Firmware Actualizado?</label>
+                                <select class="cam-firmware-updated w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white text-[10px] font-bold focus:outline-none">
+                                    <option value="Sí" selected>Sí</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[8px] text-slate-400 mb-0.5">Contraseña por Defecto Cambiada</label>
+                                <select class="cam-pwd-changed w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white text-[10px] font-bold focus:outline-none">
+                                    <option value="Sí" selected>Sí</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[8px] text-slate-400 mb-0.5">Audio</label>
+                                <select class="cam-audio w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white text-[10px] font-bold focus:outline-none">
+                                    <option value="Activado" selected>Activado</option>
+                                    <option value="Desactivado">Desactivado</option>
+                                </select>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-[8px] text-slate-400 mb-0.5">Tipo de Alimentación</label>
+                                <select class="cam-poe-type w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white text-[10px] font-bold focus:outline-none">
+                                    <option value="Switch PoE" selected>Switch PoE</option>
+                                    <option value="Inyector Individual">Inyector Individual</option>
+                                    <option value="AC/DC">AC/DC</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px]">
@@ -2765,6 +2935,11 @@
                     subGop: item.querySelector('.cam-sub-gop').value || 'N/R',
                     recordMode: item.querySelector('.cam-record-mode')?.value || '24 Horas (Cíclica)',
                     recordStream: item.querySelector('.cam-record-stream')?.value || 'Primer Stream',
+                    firmware: item.querySelector('.cam-firmware')?.value || 'N/R',
+                    firmwareUpdated: item.querySelector('.cam-firmware-updated')?.value || 'Sí',
+                    pwdChanged: item.querySelector('.cam-pwd-changed')?.value || 'Sí',
+                    audio: item.querySelector('.cam-audio')?.value || 'Activado',
+                    poeType: item.querySelector('.cam-poe-type')?.value || 'Switch PoE',
                     status: statusRadio ? statusRadio.value : 'PASA',
                     obs: item.querySelector('.cam-obs').value || '-',
                     fotoGen: item.querySelector('.cam-foto-general') ? item.querySelector('.cam-foto-general').value : ''
@@ -2983,6 +3158,17 @@
                     mtu_foto: document.getElementById('b64_mtu') ? document.getElementById('b64_mtu').value : '',
                     mtu_extras: extraerMtusExtra(),
 
+                    ddns_domain: document.getElementById('val_ddns_domain').value || 'No configurado',
+                    port_forward: document.getElementById('val_port_forward').value || 'No',
+                    remote_access_status: document.querySelector('input[name="chk_remote_access_status"]:checked').value,
+                    remote_access_obs: document.getElementById('obs_remote_access').value || '-',
+                    remote_access_foto: document.getElementById('b64_remote_access') ? document.getElementById('b64_remote_access').value : '',
+
+                    ntp_server: document.getElementById('val_ntp_server').value || 'No especificado',
+                    ntp_status: document.querySelector('input[name="chk_ntp_status"]:checked').value,
+                    ntp_obs: document.getElementById('obs_ntp').value || '-',
+                    ntp_foto: document.getElementById('b64_ntp') ? document.getElementById('b64_ntp').value : '',
+
                     cpu_pct: document.getElementById('val_cpu_pct').value || 'N/R',
                     cpu_status: document.querySelector('input[name="chk_cpu_status"]:checked').value,
                     ram_pct: document.getElementById('val_ram_pct').value || 'N/R',
@@ -3054,6 +3240,8 @@
             net_upload_val: 'val_net_upload', net_download_val: 'val_net_download',
             red_global_obs: 'obs_ping_cam', red_global_foto: 'b64_net',
             mtu_route: 'val_mtu_route', mtu_val: 'val_mtu', mtu_obs: 'obs_mtu', mtu_foto: 'b64_mtu',
+            ddns_domain: 'val_ddns_domain', port_forward: 'val_port_forward', remote_access_obs: 'obs_remote_access', remote_access_foto: 'b64_remote_access',
+            ntp_server: 'val_ntp_server', ntp_obs: 'obs_ntp', ntp_foto: 'b64_ntp',
             cpu_pct: 'val_cpu_pct', ram_pct: 'val_ram_pct', gpu_pct: 'val_gpu_pct',
             hw_stress_obs: 'obs_hardware_stress', hw_stress_foto: 'b64_hw_stress',
             event_logs_val: 'val_event_base', event_logs_obs: 'obs_event_logs', event_logs_foto: 'b64_event_logs',
@@ -3073,6 +3261,7 @@
             ping_cc_status: 'chk_ping_cc',
             net_upload_status: 'chk_upload_net_status', net_download_status: 'chk_download_net_status',
             mtu_status: 'chk_mtu_status', cpu_status: 'chk_cpu_status', ram_status: 'chk_ram_status', gpu_status: 'chk_gpu_status',
+            remote_access_status: 'chk_remote_access_status', ntp_status: 'chk_ntp_status',
             event_logs_status: 'chk_event_logs', temp_status: 'chk_temp_status',
             sw_gv_events_status: 'chk_sw_gv_events', av_status: 'chk_av_status',
             sw_ctrl_status: 'chk_sw_ctrl', sw_upd_status: 'chk_sw_upd', lic_status: 'chk_lic_status'
@@ -3112,6 +3301,11 @@
                 ip: document.getElementById('srv-ip').value || 'No Especifica',
                 os: document.getElementById('srv-os').value || 'No Especifica',
                 winLicense: document.getElementById('srv-win-license').value || 'No registrada',
+                subnet: document.getElementById('srv-subnet').value || 'No Especifica',
+                gateway: document.getElementById('srv-gateway').value || 'No Especifica',
+                dns: document.getElementById('srv-dns').value || 'No Especifica',
+                ipType: document.getElementById('srv-ip-type').value || 'No Especifica',
+                vlan: document.getElementById('srv-vlan').value || 'No aplica',
                 brand: document.getElementById('srv-brand').value || 'No Especifica',
                 serial: document.getElementById('srv-serial').value || 'No Especifica',
                 purchaseDate: document.getElementById('srv-purchase-date').value || 'No registrada',
@@ -3507,7 +3701,9 @@
                                 <strong>Protocolo:</strong> ${escaparHTML(c.protocol)}<br>
                                 <strong>Main:</strong> ${escaparHTML(c.mainCodec)} / ${escaparHTML(c.mainTransmission || 'VBR')} / ${escaparHTML(c.mainRes)} / ${escaparHTML(c.mainFps)}fps / GOP: ${escaparHTML(c.mainGop)}<br>
                                 <strong>Sub:</strong> ${escaparHTML(c.subCodec)} / ${escaparHTML(c.subTransmission || 'VBR')} / ${escaparHTML(c.subRes)} / ${escaparHTML(c.subFps)}fps / GOP: ${escaparHTML(c.subGop)}<br>
-                                <strong>Grabación:</strong> ${escaparHTML(c.recordMode || 'N/R')} / ${escaparHTML(c.recordStream || 'N/R')}
+                                <strong>Grabación:</strong> ${escaparHTML(c.recordMode || 'N/R')} / ${escaparHTML(c.recordStream || 'N/R')}<br>
+                                <strong>Firmware:</strong> ${escaparHTML(c.firmware)} (Actualizado: ${escaparHTML(c.firmwareUpdated)}) | <strong>Contraseña cambiada:</strong> ${escaparHTML(c.pwdChanged)}<br>
+                                <strong>Audio:</strong> ${escaparHTML(c.audio)} | <strong>Alimentación:</strong> ${escaparHTML(c.poeType)}
                             </td>
                             <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: white; background-color: ${c.status === 'PASA' ? '#16a34a' : '#E52724'};">${escaparHTML(c.status)}</td>
                             <td style="padding: 4px; border: 1px solid #cbd5e1; font-style: italic;">${escaparHTML(c.obs)} ${renderPdfImg(c.fotoGen)}</td>
@@ -3632,6 +3828,22 @@
                                 </tr>
                                 ${extraMtusHtml}
 
+                                ${pdfSubMenu('E. Acceso remoto y VPN')}
+                                <tr>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1;"><strong>Acceso Remoto</strong></td>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1;">VPN / IP Pública: ${escaparHTML(srv.pruebasFijas.ddns_domain)}<br>Puertos redirigidos: ${escaparHTML(srv.pruebasFijas.port_forward)}</td>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: white; background-color: ${srv.pruebasFijas.remote_access_status === 'CORRECTO' ? '#16a34a' : '#E52724'};">${escaparHTML(srv.pruebasFijas.remote_access_status)}</td>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1; font-style: italic;">${escaparHTML(srv.pruebasFijas.remote_access_obs)} ${renderPdfImg(srv.pruebasFijas.remote_access_foto)}</td>
+                                </tr>
+
+                                ${pdfSubMenu('F. Sincronización horaria (NTP)')}
+                                <tr>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1;"><strong>Sincronización NTP</strong></td>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1;">Servidor: ${escaparHTML(srv.pruebasFijas.ntp_server)}</td>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: white; background-color: ${srv.pruebasFijas.ntp_status === 'CORRECTO' ? '#16a34a' : '#E52724'};">${escaparHTML(srv.pruebasFijas.ntp_status)}</td>
+                                    <td style="padding: 4px; border: 1px solid #cbd5e1; font-style: italic;">${escaparHTML(srv.pruebasFijas.ntp_obs)} ${renderPdfImg(srv.pruebasFijas.ntp_foto)}</td>
+                                </tr>
+
                                 <!-- Hardware -->
                                 ${pdfSeccionBanner('🖥️ RENDIMIENTO Y HARDWARE')}
                                 ${pdfSubMenu('A. Discos físicos y almacenamiento')}
@@ -3736,14 +3948,28 @@
                     <div style="font-weight: bold; color: #122f4a; font-size: 9.5px; margin-bottom: 4px; border-left: 3px solid #2B4763; padding-left: 5px;">I. INVENTARIO Y ARQUITECTURA TÉCNICA</div>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px; font-size: 9px;">
                         <tr>
-                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc; width: 22%;"><strong>Dirección IP:</strong></td>
-                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; width: 28%;">${escaparHTML(srv.ip)}</td>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc; width: 22%;"><strong>Sistema Operativo:</strong></td>
-                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; width: 28%;">${escaparHTML(srv.os)}</td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; width: 28%;" colspan="3">${escaparHTML(srv.os)}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Licencia de Windows:</strong></td>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${escaparHTML(srv.winLicense)}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Dirección IP:</strong></td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${escaparHTML(srv.ip)}</td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Máscara / Gateway:</strong></td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${escaparHTML(srv.subnet)} / ${escaparHTML(srv.gateway)}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>DNS:</strong></td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${escaparHTML(srv.dns)}</td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Tipo de IP:</strong></td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${escaparHTML(srv.ipType)}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>VLAN:</strong></td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${escaparHTML(srv.vlan)}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Marca / Modelo:</strong></td>
