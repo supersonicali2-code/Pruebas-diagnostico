@@ -305,6 +305,13 @@
                     <label class="block text-[11px] text-slate-300 font-medium mb-1">Serial Físico / Service Tag</label>
                     <input type="text" id="srv-serial" placeholder="Código único de chasis" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
                 </div>
+                <div>
+                    <label class="block text-[11px] text-slate-300 font-medium mb-1">Sistema Operativo Activado</label>
+                    <select id="srv-os-activated" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white font-bold focus:outline-none">
+                        <option value="Sí" selected>Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
                 <div class="col-span-2">
                     <label class="block text-[11px] text-slate-300 font-medium mb-1">Licencia de Windows (Serial / Product Key)</label>
                     <input type="text" id="srv-win-license" placeholder="Ej: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white font-mono focus:outline-none focus:border-sky-400">
@@ -1938,6 +1945,7 @@
                 srvIp: document.getElementById('srv-ip').value,
                 srvOs: document.getElementById('srv-os').value,
                 srvWinLicense: document.getElementById('srv-win-license').value,
+                srvOsActivated: document.getElementById('srv-os-activated').value,
                 srvSubnet: document.getElementById('srv-subnet').value,
                 srvGateway: document.getElementById('srv-gateway').value,
                 srvDns: document.getElementById('srv-dns').value,
@@ -1981,6 +1989,7 @@
                 if (data.srvIp) document.getElementById('srv-ip').value = data.srvIp;
                 if (data.srvOs) document.getElementById('srv-os').value = data.srvOs;
                 if (data.srvWinLicense) document.getElementById('srv-win-license').value = data.srvWinLicense;
+                if (data.srvOsActivated) document.getElementById('srv-os-activated').value = data.srvOsActivated;
                 if (data.srvSubnet) document.getElementById('srv-subnet').value = data.srvSubnet;
                 if (data.srvGateway) document.getElementById('srv-gateway').value = data.srvGateway;
                 if (data.srvDns) document.getElementById('srv-dns').value = data.srvDns;
@@ -3301,6 +3310,7 @@
                 ip: document.getElementById('srv-ip').value || 'No Especifica',
                 os: document.getElementById('srv-os').value || 'No Especifica',
                 winLicense: document.getElementById('srv-win-license').value || 'No registrada',
+                osActivated: document.getElementById('srv-os-activated').value || 'Sí',
                 subnet: document.getElementById('srv-subnet').value || 'No Especifica',
                 gateway: document.getElementById('srv-gateway').value || 'No Especifica',
                 dns: document.getElementById('srv-dns').value || 'No Especifica',
@@ -3976,6 +3986,10 @@
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${escaparHTML(srv.brand)}</td>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Serial:</strong></td>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${escaparHTML(srv.serial)}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Sistema Operativo Activado:</strong></td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${escaparHTML(srv.osActivated)}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>CPU / RAM:</strong></td>
