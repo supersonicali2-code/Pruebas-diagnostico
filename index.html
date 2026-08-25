@@ -3931,12 +3931,14 @@
                                 ${tempExtrasHtml}
                                 ${logCriticosExtrasHtml}
 
-                                <!-- Cámaras -->
+                                <!-- Cámaras: únicamente en Diagnóstico Completo -->
+                                ${srv.modoReporte === 'completo' ? `
                                 ${pdfSubMenu('E. Configuración y estado de cámaras IP')}
                                 <tr>
                                     <td colspan="4" style="background-color: #7e22ce; color: white; font-weight: bold; padding: 5px 7px; border: 1px solid #cbd5e1; font-size: 9px; letter-spacing: 0.3px;">🎥 CONFIGURACIÓN CÁMARAS IP</td>
                                 </tr>
                                 ${camarasHtml}
+                                ` : ''}
 
                                 <!-- Software -->
                                 ${pdfSeccionBanner('💻 SOFTWARE Y LICENCIAMIENTO')}
