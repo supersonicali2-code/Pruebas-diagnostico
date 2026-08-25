@@ -309,6 +309,10 @@
                     <label class="block text-[11px] text-slate-300 font-medium mb-1">Serial Físico / Service Tag</label>
                     <input type="text" id="srv-serial" placeholder="Código único de chasis" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
                 </div>
+                <div class="col-span-2">
+                    <label class="block text-[11px] text-slate-300 font-medium mb-1">Licencia de Windows (Serial / Product Key)</label>
+                    <input type="text" id="srv-win-license" placeholder="Ej: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white font-mono focus:outline-none focus:border-sky-400">
+                </div>
                 <div class="col-span-2 border-t border-slate-600 pt-1"></div>
                 <div>
                     <label class="block text-[11px] text-slate-300 font-medium mb-1">Procesador (CPU)</label>
@@ -352,7 +356,7 @@
                     <input type="date" id="srv-purchase-date" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400" title="Seleccione día, mes y año">
                 </div>
                 <div class="col-span-2">
-                    <label class="block text-[11px] text-slate-300 font-medium mb-1">Software / Rol del Sistema Instalado</label>
+                    <label class="block text-[11px] text-slate-300 font-medium mb-1">Sistema y Versión de GeoVision Instalada</label>
                     <input type="text" id="srv-software" placeholder="Ej: GV-VMS V18.3.1 / Control Center" class="w-full bg-[#122f4a] border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-sky-400">
                 </div>
                 <div class="col-span-2 border-t border-slate-600 pt-3 mt-1 space-y-2">
@@ -1812,6 +1816,7 @@
                 srvName: document.getElementById('srv-name').value,
                 srvIp: document.getElementById('srv-ip').value,
                 srvOs: document.getElementById('srv-os').value,
+                srvWinLicense: document.getElementById('srv-win-license').value,
                 srvBrand: document.getElementById('srv-brand').value,
                 srvSerial: document.getElementById('srv-serial').value,
                 srvPurchaseDate: document.getElementById('srv-purchase-date').value,
@@ -1849,6 +1854,7 @@
                 if (data.srvName) document.getElementById('srv-name').value = data.srvName;
                 if (data.srvIp) document.getElementById('srv-ip').value = data.srvIp;
                 if (data.srvOs) document.getElementById('srv-os').value = data.srvOs;
+                if (data.srvWinLicense) document.getElementById('srv-win-license').value = data.srvWinLicense;
                 if (data.srvBrand) document.getElementById('srv-brand').value = data.srvBrand;
                 if (data.srvSerial) document.getElementById('srv-serial').value = data.srvSerial;
                 if (data.srvPurchaseDate) document.getElementById('srv-purchase-date').value = data.srvPurchaseDate;
@@ -2513,16 +2519,47 @@
         const LETRAS_UNIDADES = Array.from({length:24}, (_,i)=>String.fromCharCode(67+i)+':');
         let contadorGruposAlmacenamiento = 0;
         function escaparAtributo(v){return escaparHTML(v??'').replace(/"/g,'&quot;');}
+        // Convierte un texto de capacidad (ej: "4 TB", "500 GB") a GB numérico. Devuelve null si no reconoce el formato.
+        function parsearTamanoAGB(texto) {
+            const m = String(texto || '').trim().match(/([\d.,]+)\s*(TB|GB|PB|MB)/i);
+            if (!m) return null;
+            const num = parseFloat(m[1].replace(',', '.')) || 0;
+            const unidad = m[2].toUpperCase();
+            const factor = unidad === 'PB' ? 1024 * 1024 : unidad === 'TB' ? 1024 : unidad === 'MB' ? (1 / 1024) : 1;
+            return num * factor;
+        }
+        // Formatea un total en GB como texto legible, subiendo a TB cuando corresponde.
+        function formatearGBComoTexto(totalGB) {
+            return totalGB >= 1024 ? `${(totalGB / 1024).toFixed(2).replace(/\.00$/, '')} TB` : `${totalGB.toFixed(2).replace(/\.00$/, '')} GB`;
+        }
+        // Recalcula automáticamente la "Capacidad total del grupo" sumando el tamaño de cada unidad/disco
+        // ingresado dentro de ese grupo. Se dispara al escribir en una unidad, al añadir/quitar unidades,
+        // y al restaurar un grupo (borrador local o importación de sesión).
+        function recalcularCapacidadGrupo(gid) {
+            const g = document.getElementById(`storage_group_${gid}`);
+            if (!g) return;
+            let totalGB = 0;
+            let huboValor = false;
+            g.querySelectorAll('.sg-size').forEach(inp => {
+                const gb = parsearTamanoAGB(inp.value);
+                if (gb === null) return;
+                huboValor = true;
+                totalGB += gb;
+            });
+            const campo = g.querySelector('.sg-total-cap');
+            if (campo) campo.value = huboValor ? formatearGBComoTexto(totalGB) : '';
+        }
+
         function crearUnidadAlmacenamiento(gid,letra='',tamano='',ruta=''){
           const g=document.getElementById(`storage_group_${gid}`); if(!g)return; const w=g.querySelector('.sg-units-wrapper'); const id=w.querySelectorAll('.sg-unit-row').length+1;
           const opts=LETRAS_UNIDADES.map(l=>`<option value="${l}" ${letra===l?'selected':''}>${l}</option>`).join('');
           const row=document.createElement('div'); row.className='sg-unit-row bg-[#122f4a] p-2 rounded border border-slate-700 space-y-1.5';
-          row.innerHTML=`<div class="flex justify-between items-center"><span class="text-[9px] font-bold text-sky-200 sg-unit-title">Unidad #${id}</span><button type="button" onclick="this.closest('.sg-unit-row').remove();renumerarUnidadesGrupo(${gid});actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();" class="text-rose-400 text-[9px] font-bold bg-rose-500/10 px-2 py-0.5 rounded">Remover</button></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-[8px] text-slate-300 mb-0.5">Letra</label><select class="sg-drive w-full bg-slate-700 border border-slate-600 text-[10px] p-1.5 rounded text-white">${opts}</select></div><div><label class="block text-[8px] text-slate-300 mb-0.5">Tamaño / capacidad</label><input type="text" value="${escaparAtributo(tamano)}" placeholder="Ej: 4 TB" class="sg-size w-full bg-slate-700 border border-slate-600 text-[10px] p-1.5 rounded text-white"></div><div><label class="block text-[8px] text-slate-300 mb-0.5">Ruta / carpeta</label><input type="text" value="${escaparAtributo(ruta)}" placeholder="Ej: Record" class="sg-folder w-full bg-slate-700 border border-slate-600 text-[10px] p-1.5 rounded text-white"></div></div>`;
-          w.appendChild(row); const c=g.querySelector('.sg-count'); if(c)c.value=w.querySelectorAll('.sg-unit-row').length; actualizarSelectsGruposAlmacenamiento();
+          row.innerHTML=`<div class="flex justify-between items-center"><span class="text-[9px] font-bold text-sky-200 sg-unit-title">Unidad #${id}</span><button type="button" onclick="this.closest('.sg-unit-row').remove();renumerarUnidadesGrupo(${gid});recalcularCapacidadGrupo(${gid});actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();" class="text-rose-400 text-[9px] font-bold bg-rose-500/10 px-2 py-0.5 rounded">Remover</button></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-[8px] text-slate-300 mb-0.5">Letra</label><select class="sg-drive w-full bg-slate-700 border border-slate-600 text-[10px] p-1.5 rounded text-white">${opts}</select></div><div><label class="block text-[8px] text-slate-300 mb-0.5">Tamaño / capacidad</label><input type="text" value="${escaparAtributo(tamano)}" placeholder="Ej: 4 TB" oninput="recalcularCapacidadGrupo(${gid})" class="sg-size w-full bg-slate-700 border border-slate-600 text-[10px] p-1.5 rounded text-white"></div><div><label class="block text-[8px] text-slate-300 mb-0.5">Ruta / carpeta</label><input type="text" value="${escaparAtributo(ruta)}" placeholder="Ej: Record" class="sg-folder w-full bg-slate-700 border border-slate-600 text-[10px] p-1.5 rounded text-white"></div></div>`;
+          w.appendChild(row); const c=g.querySelector('.sg-count'); if(c)c.value=w.querySelectorAll('.sg-unit-row').length; actualizarSelectsGruposAlmacenamiento(); recalcularCapacidadGrupo(gid);
         }
         function renumerarUnidadesGrupo(gid){const g=document.getElementById(`storage_group_${gid}`);if(!g)return;g.querySelectorAll('.sg-unit-row').forEach((r,i)=>{const t=r.querySelector('.sg-unit-title');if(t)t.textContent=`Unidad #${i+1}`});const c=g.querySelector('.sg-count');if(c)c.value=g.querySelectorAll('.sg-unit-row').length;}
-        function ajustarCantidadUnidades(gid){const g=document.getElementById(`storage_group_${gid}`);if(!g)return;const n=Math.max(0,Math.min(24,parseInt(g.querySelector('.sg-count')?.value||0,10)||0));const w=g.querySelector('.sg-units-wrapper');while(w.querySelectorAll('.sg-unit-row').length<n)crearUnidadAlmacenamiento(gid);while(w.querySelectorAll('.sg-unit-row').length>n)w.lastElementChild.remove();renumerarUnidadesGrupo(gid);actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();}
-        function agregarGrupoAlmacenamiento(data={}){contadorGruposAlmacenamiento++;const id=contadorGruposAlmacenamiento;const w=document.getElementById('wrapper-storage-groups');if(!w)return;const g=document.createElement('div');g.id=`storage_group_${id}`;g.className='storage-group-item bg-slate-950 p-2.5 rounded border border-slate-800 space-y-2';const us=Array.isArray(data.unidades)?data.unidades:[];g.innerHTML=`<div class="flex justify-between items-center border-b border-slate-800 pb-1"><span class="text-[9px] font-bold text-sky-300">Grupo ${id}</span><button type="button" onclick="document.getElementById('storage_group_${id}').remove();actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();" class="text-rose-400 text-[9px] font-bold bg-rose-500/10 px-2 py-0.5 rounded">Remover X</button></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-[8px] text-slate-300 mb-0.5">Cantidad de discos</label><input type="number" min="0" max="24" value="${us.length||data.cantidadDiscos||0}" class="sg-count w-full bg-[#122f4a] border border-slate-600 text-[10px] p-1.5 rounded text-white"></div><div class="col-span-2"><label class="block text-[8px] text-slate-300 mb-0.5">Capacidad total del grupo</label><input type="text" value="${escaparAtributo(data.capacidadTotal||'')}" placeholder="Ej: 16 TB" class="sg-total-cap w-full bg-[#122f4a] border border-slate-600 text-[10px] p-1.5 rounded text-white"></div></div><div class="flex justify-between items-center"><span class="text-[9px] font-bold text-slate-300">Unidades y rutas</span><button type="button" onclick="ajustarCantidadUnidades(${id})" class="bg-sky-700 text-white text-[9px] font-bold px-2 py-1 rounded">Aplicar cantidad</button></div><div class="sg-units-wrapper space-y-1.5"></div><div class="flex justify-center"><button type="button" onclick="crearUnidadAlmacenamiento(${id});dispararAutoguardado();" class="w-full bg-slate-700 text-white text-[9px] font-bold px-2 py-1 rounded">➕ Unidad/Ruta</button></div><div class="sg-cameras-panel bg-slate-900/80 border border-purple-500/20 rounded p-2"><div class="flex justify-between items-center mb-1"><span class="text-[9px] font-bold text-purple-300">🎥 Cámaras asignadas</span><span class="sg-camera-count text-[9px] font-bold text-white bg-purple-600/30 px-2 py-0.5 rounded">0 cámaras</span></div><div class="sg-cameras-summary text-[9px] text-slate-400 italic">Sin cámaras asignadas</div></div>`;w.appendChild(g);us.forEach((u,i)=>crearUnidadAlmacenamiento(id,u.drive||LETRAS_UNIDADES[i]||'',u.size||'',u.folder||u.ruta||''));actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();}
+        function ajustarCantidadUnidades(gid){const g=document.getElementById(`storage_group_${gid}`);if(!g)return;const n=Math.max(0,Math.min(24,parseInt(g.querySelector('.sg-count')?.value||0,10)||0));const w=g.querySelector('.sg-units-wrapper');while(w.querySelectorAll('.sg-unit-row').length<n)crearUnidadAlmacenamiento(gid);while(w.querySelectorAll('.sg-unit-row').length>n)w.lastElementChild.remove();renumerarUnidadesGrupo(gid);recalcularCapacidadGrupo(gid);actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();}
+        function agregarGrupoAlmacenamiento(data={}){contadorGruposAlmacenamiento++;const id=contadorGruposAlmacenamiento;const w=document.getElementById('wrapper-storage-groups');if(!w)return;const g=document.createElement('div');g.id=`storage_group_${id}`;g.className='storage-group-item bg-slate-950 p-2.5 rounded border border-slate-800 space-y-2';const us=Array.isArray(data.unidades)?data.unidades:[];g.innerHTML=`<div class="flex justify-between items-center border-b border-slate-800 pb-1"><span class="text-[9px] font-bold text-sky-300">Grupo ${id}</span><button type="button" onclick="document.getElementById('storage_group_${id}').remove();actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();" class="text-rose-400 text-[9px] font-bold bg-rose-500/10 px-2 py-0.5 rounded">Remover X</button></div><div class="grid grid-cols-3 gap-2"><div><label class="block text-[8px] text-slate-300 mb-0.5">Cantidad de discos</label><input type="number" min="0" max="24" value="${us.length||data.cantidadDiscos||0}" class="sg-count w-full bg-[#122f4a] border border-slate-600 text-[10px] p-1.5 rounded text-white"></div><div class="col-span-2"><label class="block text-[8px] text-slate-300 mb-0.5">Capacidad total del grupo (automática, suma de unidades)</label><input type="text" value="${escaparAtributo(data.capacidadTotal||'')}" placeholder="Se calcula solo al ingresar unidades" readonly class="sg-total-cap w-full bg-slate-900/70 border border-slate-600 text-[10px] p-1.5 rounded text-emerald-300 font-bold cursor-not-allowed"></div></div><div class="flex justify-between items-center"><span class="text-[9px] font-bold text-slate-300">Unidades y rutas</span><button type="button" onclick="ajustarCantidadUnidades(${id})" class="bg-sky-700 text-white text-[9px] font-bold px-2 py-1 rounded">Aplicar cantidad</button></div><div class="sg-units-wrapper space-y-1.5"></div><div class="flex justify-center"><button type="button" onclick="crearUnidadAlmacenamiento(${id});dispararAutoguardado();" class="w-full bg-slate-700 text-white text-[9px] font-bold px-2 py-1 rounded">➕ Unidad/Ruta</button></div><div class="sg-cameras-panel bg-slate-900/80 border border-purple-500/20 rounded p-2"><div class="flex justify-between items-center mb-1"><span class="text-[9px] font-bold text-purple-300">🎥 Cámaras asignadas</span><span class="sg-camera-count text-[9px] font-bold text-white bg-purple-600/30 px-2 py-0.5 rounded">0 cámaras</span></div><div class="sg-cameras-summary text-[9px] text-slate-400 italic">Sin cámaras asignadas</div></div>`;w.appendChild(g);us.forEach((u,i)=>crearUnidadAlmacenamiento(id,u.drive||LETRAS_UNIDADES[i]||'',u.size||'',u.folder||u.ruta||''));recalcularCapacidadGrupo(id);actualizarSelectsGruposAlmacenamiento();actualizarCamarasEnGrupos();dispararAutoguardado();}
         function obtenerGruposAlmacenamientoBase(){return [...document.querySelectorAll('.storage-group-item')].map((item,idx)=>{const id=Number((item.id||'').split('_').pop())||idx+1;const unidades=[...item.querySelectorAll('.sg-unit-row')].map(u=>({drive:u.querySelector('.sg-drive')?.value||'',size:u.querySelector('.sg-size')?.value.trim()||'N/R',folder:u.querySelector('.sg-folder')?.value.trim()||'N/R'}));return{id,name:`Grupo ${idx+1}`,cantidadDiscos:unidades.length,capacidadTotal:item.querySelector('.sg-total-cap')?.value.trim()||'N/R',unidades};});}
         function obtenerCamarasAsignadasAGrupos(){const mapa={};document.querySelectorAll('.cam-item').forEach((item,idx)=>{const group=item.querySelector('.cam-storage-group')?.value||'';if(!group)return;if(!mapa[group])mapa[group]=[];mapa[group].push({channel:item.querySelector('.cam-channel')?.value.trim()||String(idx+1),name:item.querySelector('.cam-name')?.value.trim()||`CAM-${String(idx+1).padStart(2,'0')}`});});return mapa;}
         function actualizarCamarasEnGrupos(){const mapa=obtenerCamarasAsignadasAGrupos();document.querySelectorAll('.storage-group-item').forEach((item,idx)=>{const id=Number((item.id||'').split('_').pop())||idx+1;const cams=mapa[id]||[];const count=item.querySelector('.sg-camera-count');const summary=item.querySelector('.sg-cameras-summary');if(count)count.textContent=`${cams.length} ${cams.length===1?'cámara':'cámaras'}`;if(summary){summary.innerHTML=cams.length?cams.map(c=>`<div class="flex items-center gap-1 py-0.5"><span class="text-purple-300 font-bold">CH ${escaparHTML(c.channel)}</span><span class="text-slate-500">—</span><span class="text-slate-200">${escaparHTML(c.name)}</span></div>`).join(''):'Sin cámaras asignadas';}});}
@@ -2553,8 +2590,12 @@
                         <input type="text" placeholder="Ej: Portería Norte" class="cam-loc w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[9px] text-slate-300 mb-0.5">Marca / Modelo</label>
+                        <label class="block text-[9px] text-slate-300 mb-0.5">Marca</label>
                         <input type="text" value="GeoVision" class="cam-brand w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] text-slate-300 mb-0.5">Modelo</label>
+                        <input type="text" placeholder="Ej: TVI-4MP-Dome" class="cam-model w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[9px] text-slate-300 mb-0.5">Dirección IP</label>
@@ -2638,6 +2679,27 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-span-2 bg-slate-900 p-2.5 rounded border border-slate-800 space-y-2">
+                        <span class="text-[9px] font-bold text-emerald-300 uppercase block">Configuración de Grabación</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[8px] text-slate-400 mb-0.5">Modo de Grabación</label>
+                                <select class="cam-record-mode w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white text-[10px] font-bold focus:outline-none">
+                                    <option value="24 Horas (Cíclica)" selected>24 Horas (Cíclica)</option>
+                                    <option value="Detección de Movimiento">Detección de Movimiento</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[8px] text-slate-400 mb-0.5">Stream en Grabación</label>
+                                <select class="cam-record-stream w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white text-[10px] font-bold focus:outline-none">
+                                    <option value="Primer Stream" selected>Primer Stream</option>
+                                    <option value="Segundo Stream">Segundo Stream</option>
+                                    <option value="Doble Stream">Doble Stream</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px]">
@@ -2686,6 +2748,7 @@
                     name: item.querySelector('.cam-name').value || 'CAM-01',
                     loc: item.querySelector('.cam-loc').value || 'N/R',
                     brand: item.querySelector('.cam-brand').value || 'GeoVision',
+                    model: item.querySelector('.cam-model').value || 'N/R',
                     ip: item.querySelector('.cam-ip').value || 'N/R',
                     storageGroup: item.querySelector('.cam-storage-group')?.value || '',
                     storageGroupName: (()=>{const v=item.querySelector('.cam-storage-group')?.value||'';const g=extraerGruposAlmacenamiento().find(x=>String(x.id)===String(v));return g?g.name:'';})(),
@@ -2700,6 +2763,8 @@
                     subRes: item.querySelector('.cam-sub-res').value || 'N/R',
                     subFps: item.querySelector('.cam-sub-fps').value || 'N/R',
                     subGop: item.querySelector('.cam-sub-gop').value || 'N/R',
+                    recordMode: item.querySelector('.cam-record-mode')?.value || '24 Horas (Cíclica)',
+                    recordStream: item.querySelector('.cam-record-stream')?.value || 'Primer Stream',
                     status: statusRadio ? statusRadio.value : 'PASA',
                     obs: item.querySelector('.cam-obs').value || '-',
                     fotoGen: item.querySelector('.cam-foto-general') ? item.querySelector('.cam-foto-general').value : ''
@@ -3046,6 +3111,7 @@
                 nombre: idServidor,
                 ip: document.getElementById('srv-ip').value || 'No Especifica',
                 os: document.getElementById('srv-os').value || 'No Especifica',
+                winLicense: document.getElementById('srv-win-license').value || 'No registrada',
                 brand: document.getElementById('srv-brand').value || 'No Especifica',
                 serial: document.getElementById('srv-serial').value || 'No Especifica',
                 purchaseDate: document.getElementById('srv-purchase-date').value || 'No registrada',
@@ -3158,18 +3224,13 @@
             let totalGB = 0;
             let huboValor = false;
             grupos.forEach(g => {
-                const texto = String(g.capacidadTotal || '').trim();
-                const m = texto.match(/([\d.,]+)\s*(TB|GB|PB|MB)/i);
-                if (!m) return;
+                const gb = parsearTamanoAGB(g.capacidadTotal);
+                if (gb === null) return;
                 huboValor = true;
-                const num = parseFloat(m[1].replace(',', '.')) || 0;
-                const unidad = m[2].toUpperCase();
-                const factor = unidad === 'PB' ? 1024 * 1024 : unidad === 'TB' ? 1024 : unidad === 'MB' ? (1 / 1024) : 1;
-                totalGB += num * factor;
+                totalGB += gb;
             });
             if (!huboValor) return 'No registrado';
-            const valorFinal = totalGB >= 1024 ? `${(totalGB / 1024).toFixed(2).replace(/\.00$/, '')} TB` : `${totalGB.toFixed(2).replace(/\.00$/, '')} GB`;
-            return valorFinal;
+            return formatearGBComoTexto(totalGB);
         }
 
         // Separa visualmente la referencia de fábrica del valor medido en campo, para que
@@ -3442,10 +3503,11 @@
                         <tr>
                             <td style="padding: 4px; border: 1px solid #cbd5e1; color: #7e22ce;"><strong>[CÁMARA #${escaparHTML(c.channel)}]</strong><br>${escaparHTML(c.name)}</td>
                             <td style="padding: 4px; border: 1px solid #cbd5e1; font-size: 7.5px;">
-                                Ubicación: ${escaparHTML(c.loc)} | IP: ${escaparHTML(c.ip)}<br><strong>Grupo almacenamiento:</strong> ${escaparHTML(c.storageGroupName || 'Sin asignar')}<br>
+                                Ubicación: ${escaparHTML(c.loc)} | IP: ${escaparHTML(c.ip)}<br><strong>Marca/Modelo:</strong> ${escaparHTML(c.brand)} / ${escaparHTML(c.model)}<br><strong>Grupo almacenamiento:</strong> ${escaparHTML(c.storageGroupName || 'Sin asignar')}<br>
                                 <strong>Protocolo:</strong> ${escaparHTML(c.protocol)}<br>
                                 <strong>Main:</strong> ${escaparHTML(c.mainCodec)} / ${escaparHTML(c.mainTransmission || 'VBR')} / ${escaparHTML(c.mainRes)} / ${escaparHTML(c.mainFps)}fps / GOP: ${escaparHTML(c.mainGop)}<br>
-                                <strong>Sub:</strong> ${escaparHTML(c.subCodec)} / ${escaparHTML(c.subTransmission || 'VBR')} / ${escaparHTML(c.subRes)} / ${escaparHTML(c.subFps)}fps / GOP: ${escaparHTML(c.subGop)}
+                                <strong>Sub:</strong> ${escaparHTML(c.subCodec)} / ${escaparHTML(c.subTransmission || 'VBR')} / ${escaparHTML(c.subRes)} / ${escaparHTML(c.subFps)}fps / GOP: ${escaparHTML(c.subGop)}<br>
+                                <strong>Grabación:</strong> ${escaparHTML(c.recordMode || 'N/R')} / ${escaparHTML(c.recordStream || 'N/R')}
                             </td>
                             <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: white; background-color: ${c.status === 'PASA' ? '#16a34a' : '#E52724'};">${escaparHTML(c.status)}</td>
                             <td style="padding: 4px; border: 1px solid #cbd5e1; font-style: italic;">${escaparHTML(c.obs)} ${renderPdfImg(c.fotoGen)}</td>
@@ -3678,6 +3740,10 @@
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; width: 28%;">${escaparHTML(srv.ip)}</td>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc; width: 22%;"><strong>Sistema Operativo:</strong></td>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; width: 28%;">${escaparHTML(srv.os)}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Licencia de Windows:</strong></td>
+                            <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${escaparHTML(srv.winLicense)}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 6px; border: 1px solid #cbd5e1; background-color: #f8fafc;"><strong>Marca / Modelo:</strong></td>
