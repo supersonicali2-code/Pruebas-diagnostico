@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.1">
-    <title>Diagnóstico e Inventario para servidores Geovision | Uso interno autorizado</title>
+    <title>Diagnóstico e Inventario para servidores Geovision | 3 modos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -210,7 +210,7 @@
             </div>
             <div class="flex items-center space-x-2">
                 <button type="button" onclick="limpiarBorradorLocal()" title="Iniciar una nueva ficha y borrar el borrador y la sesión local de este aplicativo" class="bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 text-[10px] px-2 py-1 rounded border border-rose-500/30 transition">🗑️ Nueva ficha</button>
-                <span class="bg-sky-500/10 text-sky-400 text-xs font-bold px-2.5 py-1 rounded border border-sky-500/20 whitespace-nowrap">v2.2</span>
+                <span class="bg-sky-500/10 text-sky-400 text-xs font-bold px-2.5 py-1 rounded border border-sky-500/20 whitespace-nowrap">v2.3 · 3 modos</span>
             </div>
         </div>
     </header>
@@ -272,16 +272,21 @@
         <section class="bg-[#2B4763] rounded-xl p-4 border border-slate-600 shadow-sm space-y-3">
             <h2 class="text-xs font-bold text-sky-300 uppercase tracking-wider font-oswald">Modo de Operación del Registro</h2>
             <p class="text-[10px] text-slate-300">Seleccione si requiere un informe exhaustivo de descarte de fallas o únicamente el levantamiento físico de inventario.</p>
-            <div class="grid grid-cols-2 gap-2">
-                <label class="status-btn cursor-pointer">
-                    <input type="radio" name="modo-reporte" value="completo" checked class="sr-only" onchange="cambiarModoReporte('completo')">
-                    <span class="block text-center bg-[#122f4a] text-xs py-2.5 rounded font-bold text-sky-300 border border-sky-500/30">🔧 Diagnóstico Completo</span>
-                </label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <label class="status-btn cursor-pointer">
                     <input type="radio" name="modo-reporte" value="inventario" class="sr-only" onchange="cambiarModoReporte('inventario')">
-                    <span class="block text-center bg-[#122f4a] text-xs py-2.5 rounded font-bold text-emerald-400 border border-emerald-500/30">📋 Solo Inventario</span>
+                    <span class="block text-center bg-[#122f4a] text-xs py-2.5 rounded font-bold text-emerald-400 border border-emerald-500/30">📋 Modo Inventario</span>
+                </label>
+                <label class="status-btn cursor-pointer">
+                    <input type="radio" name="modo-reporte" value="laboratorio" checked class="sr-only" onchange="cambiarModoReporte('laboratorio')">
+                    <span class="block text-center bg-[#122f4a] text-xs py-2.5 rounded font-bold text-amber-300 border border-amber-500/30">🧪 Diagnóstico de Laboratorio</span>
+                </label>
+                <label class="status-btn cursor-pointer">
+                    <input type="radio" name="modo-reporte" value="completo" class="sr-only" onchange="cambiarModoReporte('completo')">
+                    <span class="block text-center bg-[#122f4a] text-xs py-2.5 rounded font-bold text-sky-300 border border-sky-500/30">📍 Diagnóstico Completo</span>
                 </label>
             </div>
+            <div id="modo-reporte-ayuda" class="text-[10px] text-slate-400 border-t border-slate-600 pt-2">🧪 Laboratorio: pruebas autónomas del equipo y pruebas controladas que no dependen de la instalación del cliente.</div>
         </section>
 
         <section class="bg-[#2B4763] rounded-xl p-4 border border-slate-600 shadow-sm space-y-3">
@@ -413,7 +418,7 @@
                         <span class="text-xs font-bold text-yellow-400 font-oswald">⚡ 1. CAPA ELÉCTRICA Y CALIDAD DE ENERGÍA</span>
                     </div>
 
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-3">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-3" data-modo-prueba="true" data-titulo-prueba="Prueba 1.1: Mediciones de Voltaje con Multímetro en Tomacorriente">
                         <h4 class="text-xs font-bold text-slate-200 font-oswald">Prueba 1.1: Mediciones de Voltaje con Multímetro en Tomacorriente</h4>
                         <div class="text-[10px] text-slate-300 bg-slate-900/60 p-2 rounded border border-slate-800 space-y-1">
                             <p>💡 <strong>Software / Herramienta:</strong> Multímetro Digital True RMS.</p>
@@ -441,6 +446,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                             <input type="text" id="obs_volt_fn" placeholder="Observaciones Fase-Neutro..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             
                             <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -476,6 +482,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                             <input type="text" id="obs_volt_ft" placeholder="Observaciones Fase-Tierra..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             
                             <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -511,6 +518,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                             <input type="text" id="obs_volt_nt" placeholder="Observaciones Neutro-Tierra..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             
                             <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -534,7 +542,7 @@
 
                 <!-- PRUEBA 1.2: MEDICIONES DE FUENTE DESDE BIOS/UEFI -->
                 <div class="space-y-4 pt-4 border-t border-slate-600">
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-3">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-3" data-modo-prueba="true" data-titulo-prueba="Prueba 1.2: Mediciones de Fuentes de Poder desde BIOS/UEFI">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-yellow-950 text-yellow-300 border border-yellow-800">FUENTE / BIOS-UEFI</span>
                         </div>
@@ -618,6 +626,7 @@
 
                         <div id="wrapper-bios-voltages" class="space-y-2"></div>
                         <div class="flex justify-center"><button type="button" onclick="agregarVoltajeBIOS()" class="w-full text-yellow-300 bg-yellow-500/10 hover:bg-yellow-500/20 text-[9px] font-bold px-2 py-1.5 rounded transition">➕ Añadir Voltaje</button></div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_bios_voltages" placeholder="Observaciones generales de mediciones BIOS/UEFI..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white">
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                             <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -641,7 +650,7 @@
                     </div>
 
                     <!-- PRUEBA 1.3 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 1.3: Latencia y Pérdida de Paquetes">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
                         </div>
@@ -671,6 +680,7 @@
                                 </div>
                             </div>
                         </div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_ping_cc" placeholder="Observaciones..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -694,7 +704,7 @@
                     </div>
 
                     <!-- PRUEBA 1.4 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 1.4: Conexión de Sockets TCP (Puerto por Puerto)">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
                         </div>
@@ -716,6 +726,7 @@
 
                         <div id="wrapper-ports" class="space-y-2 w-full"></div>
                         <div class="flex justify-center"><button type="button" onclick="crearFilaPuerto()" class="w-full text-sky-300 bg-sky-500/10 hover:bg-sky-500/20 text-[9px] font-bold px-2 py-1 rounded transition">➕ Añadir Puerto</button></div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_ports" placeholder="Anotaciones sobre respuestas TCP..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none mt-2">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -736,7 +747,7 @@
                     </div>
 
                     <!-- PRUEBA 1.5 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 1.5: Inspección de Ancho de Banda y Saturación de Red">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
                         </div>
@@ -804,6 +815,7 @@
 
                         <div id="wrapper-net" class="space-y-2 mt-2 w-full"></div>
                         <div class="flex justify-center"><button type="button" onclick="crearFilaInterfaz()" class="w-full text-sky-300 bg-sky-500/10 hover:bg-sky-500/20 text-[9px] font-bold px-2 py-1 rounded transition">➕ Añadir Interfaz</button></div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_ping_cam" placeholder="Anotaciones de red..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none mt-2">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -824,7 +836,7 @@
                     </div>
 
                     <!-- PRUEBA 1.6 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 1.6: Verificación de MTU y Fragmentación (Path MTU)">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
                         </div>
@@ -855,6 +867,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                             <input type="text" id="obs_mtu" placeholder="Observaciones de MTU..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             
                             <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -880,7 +893,7 @@
                 </div>
 
                 <!-- PRUEBA 1.7 -->
-                <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 1.7: Acceso Remoto y VPN">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
                     </div>
@@ -910,6 +923,7 @@
                                 </div>
                             </div>
                         </div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_remote_access" placeholder="Observaciones de acceso remoto..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                             <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -930,7 +944,7 @@
                 </div>
 
                 <!-- PRUEBA 1.8 -->
-                <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 1.8: Sincronización Horaria (NTP)">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800">RED</span>
                     </div>
@@ -953,6 +967,7 @@
                                 </div>
                             </div>
                         </div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_ntp" placeholder="Observaciones de sincronización horaria..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                             <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -978,7 +993,7 @@
                     </div>
 
                     <!-- PRUEBA 2.1 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 2.1: Diagnóstico de Discos Duros (S.M.A.R.T. y Rendimiento I/O)">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">HARDWARE</span>
                         </div>
@@ -992,7 +1007,7 @@
                     </div>
 
                     <!-- PRUEBA 2.2 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 2.2: Stress de CPU / RAM / GPU">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">HARDWARE</span>
                         </div>
@@ -1046,6 +1061,7 @@
 
                         <div id="wrapper-gpu-extra" class="space-y-2 mt-2 w-full"></div>
                         <div class="flex justify-center"><button type="button" onclick="agregarGpuExtra()" class="w-full text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 text-[9px] font-bold px-2 py-1 rounded transition">➕ Añadir GPU Extra</button></div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_hardware_stress" placeholder="Notas sobre el comportamiento..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none mt-2">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -1066,7 +1082,7 @@
                     </div>
 
                     <!-- PRUEBA 2.3 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 2.3: Visor de Eventos / Logs Críticos">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">HARDWARE</span>
                         </div>
@@ -1090,6 +1106,7 @@
                                 </div>
                             </div>
                         </div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_event_logs" placeholder="Observaciones generales..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -1113,7 +1130,7 @@
                     </div>
 
                     <!-- PRUEBA 2.4 -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2" data-modo-prueba="true" data-titulo-prueba="Prueba 2.4: Monitoreo de Temperatura de Hardware">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">HARDWARE</span>
                         </div>
@@ -1151,6 +1168,7 @@
 
                         <div id="wrapper-temp-extra" class="space-y-2 mt-2 w-full"></div>
                         <div class="flex justify-center"><button type="button" onclick="agregarTemperaturaExtra()" class="w-full text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 text-[9px] font-bold px-2 py-1 rounded transition">➕ Añadir Medida Extra</button></div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_temp" placeholder="Observaciones térmicas..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none mt-2">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -1184,7 +1202,7 @@
                         </button>
                     </div>
 
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2 mt-4">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2 mt-4" data-modo-prueba="true" data-titulo-prueba="Configuración 4.2: Log Eventos Aplicativo GeoVision">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">SOFTWARE</span>
                         </div>
@@ -1207,6 +1225,7 @@
                                 </div>
                             </div>
                         </div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_software_core" placeholder="Observaciones detalladas..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -1230,7 +1249,7 @@
                     </div>
 
                     <!-- PRUEBA 4.3: EXCLUSIONES DE ANTIVIRUS -->
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2 mt-3">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-2 mt-3" data-modo-prueba="true" data-titulo-prueba="Configuración 4.3: Exclusiones de Antivirus / Windows Defender">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">SOFTWARE</span>
                         </div>
@@ -1255,6 +1274,7 @@
                                 <input type="text" id="val_av_name" placeholder="Ej: Windows Defender" class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             </div>
                         </div>
+                        <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                         <input type="text" id="obs_av" placeholder="Observaciones de exclusiones..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                         
                         <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -1274,7 +1294,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-3 mt-3">
+                    <div class="bg-[#122f4a] p-3 rounded-lg border border-slate-600 space-y-3 mt-3" data-modo-prueba="true" data-titulo-prueba="Configuración 4.4: Controladores y Licenciamiento">
                         <div>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">SOFTWARE</span>
                         </div>
@@ -1290,6 +1310,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                             <input type="text" id="obs_sw_ctrl" placeholder="Observaciones..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                                 <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -1320,6 +1341,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                             <input type="text" id="obs_sw_upd" placeholder="Observaciones..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                                 <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -1367,6 +1389,7 @@
                                     <input type="text" id="val_lic_num" placeholder="SN-..." class="w-full bg-[#122f4a] border border-slate-600 p-1.5 rounded text-white font-mono focus:outline-none">
                                 </div>
                             </div>
+                            <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                             <input type="text" id="obs_lic" placeholder="Observaciones..." class="w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                             <div class="evidence-slot bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                                 <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -1493,18 +1516,106 @@
         let contadorLicExtra = 0;
         let fotosActualesBase64 = []; 
 
+        function prepararPruebasPorModo() {
+            const secDiag = document.getElementById('seccion-diagnostico');
+            if (!secDiag) return;
+            secDiag.querySelectorAll('h4').forEach(h4 => {
+                const titulo = h4.textContent.trim().replace(/\s+/g, ' ');
+                if (titulo.startsWith('4.1 Configuración Cámaras IP')) return;
+                let card = h4.parentElement;
+                while (card && card !== secDiag) {
+                    if (typeof card.className === 'string' && card.className.includes('bg-[#122f4a]')) break;
+                    card = card.parentElement;
+                }
+                if (card && card !== secDiag) {
+                    card.setAttribute('data-modo-prueba', 'true');
+                    card.setAttribute('data-titulo-prueba', titulo);
+                }
+            });
+        }
+
+        const MODO_LABORATORIO_PRUEBAS = new Set([
+            'Prueba 1.2: Mediciones de Fuentes de Poder desde BIOS/UEFI',
+            'Prueba 1.4: Conexión de Sockets TCP (Puerto por Puerto)',
+            'Prueba 1.8: Sincronización Horaria (NTP)',
+            'Prueba 2.1: Diagnóstico de Discos Duros (S.M.A.R.T. y Rendimiento I/O)',
+            'Prueba 2.2: Stress de CPU / RAM / GPU',
+            'Prueba 2.3: Visor de Eventos / Logs Críticos',
+            'Prueba 2.4: Monitoreo de Temperatura de Hardware',
+            'Configuración 4.2: Log Eventos Aplicativo GeoVision',
+            'Configuración 4.3: Exclusiones de Antivirus / Windows Defender',
+            'Configuración 4.4: Controladores y Licenciamiento'
+        ]);
+
+        function pruebaPermitidaEnModo(titulo, modo) {
+            if (modo === 'completo') return true;
+            if (modo === 'laboratorio') return MODO_LABORATORIO_PRUEBAS.has(titulo);
+            return false;
+        }
+
         function cambiarModoReporte(modo) {
             const secDiag = document.getElementById('seccion-diagnostico');
+            const ayuda = document.getElementById('modo-reporte-ayuda');
             const esInventario = modo === 'inventario';
+            prepararPruebasPorModo();
+
             if (secDiag) {
                 secDiag.style.display = esInventario ? 'none' : 'block';
-                // En modo inventario las pruebas quedan realmente deshabilitadas, no solo ocultas.
-                secDiag.querySelectorAll('input, select, textarea, button').forEach(el => {
-                    // No deshabilitar elementos que sean estrictamente de navegación externa;
-                    // la sección de diagnóstico solo contiene controles de pruebas.
-                    el.disabled = esInventario;
-                });
                 secDiag.setAttribute('aria-hidden', esInventario ? 'true' : 'false');
+
+                secDiag.querySelectorAll('[data-modo-prueba]').forEach(el => {
+                    const titulo = el.getAttribute('data-titulo-prueba') || '';
+                    const habilitada = pruebaPermitidaEnModo(titulo, modo);
+                    el.style.display = habilitada ? '' : 'none';
+                    el.setAttribute('aria-hidden', habilitada ? 'false' : 'true');
+                    el.querySelectorAll('input, select, textarea, button').forEach(control => {
+                        control.disabled = !habilitada;
+                    });
+                });
+
+                // 4.1 Cámaras solo pertenece al diagnóstico completo.
+                const cameraHeading = [...secDiag.querySelectorAll('h4')]
+                    .find(h => h.textContent.trim().replace(/\s+/g, ' ').startsWith('4.1 Configuración Cámaras IP'));
+                const cameraWrapper = document.getElementById('wrapper-camaras');
+                const cameraAddButton = cameraWrapper?.parentElement?.querySelector('button[onclick*="crearFilaCamara"]');
+                if (cameraHeading) cameraHeading.style.display = modo === 'completo' ? '' : 'none';
+                if (cameraWrapper) {
+                    cameraWrapper.style.display = modo === 'completo' ? '' : 'none';
+                    cameraWrapper.setAttribute('aria-hidden', modo === 'completo' ? 'false' : 'true');
+                    cameraWrapper.querySelectorAll('input, select, textarea, button').forEach(control => {
+                        control.disabled = modo !== 'completo';
+                    });
+                }
+                if (cameraAddButton) {
+                    cameraAddButton.style.display = modo === 'completo' ? '' : 'none';
+                    cameraAddButton.disabled = modo !== 'completo';
+                }
+
+                if (esInventario) {
+                    secDiag.querySelectorAll('input, select, textarea, button').forEach(control => {
+                        control.disabled = true;
+                    });
+                }
+            }
+
+            const tipoPuerto = document.getElementById('val_port_test_type');
+            if (tipoPuerto) {
+                if (modo === 'laboratorio') {
+                    tipoPuerto.value = 'Interna (Misma máquina)';
+                    tipoPuerto.disabled = true;
+                } else if (modo === 'completo') {
+                    tipoPuerto.disabled = false;
+                } else {
+                    tipoPuerto.disabled = true;
+                }
+            }
+
+            if (ayuda) {
+                ayuda.innerHTML = modo === 'inventario'
+                    ? '📋 Inventario: solo levantamiento técnico e información completa del equipo. No se ejecutan ni habilitan pruebas de diagnóstico.'
+                    : modo === 'laboratorio'
+                        ? '🧪 Laboratorio: solo pruebas autónomas o controladas que pueden ejecutarse sin la infraestructura del cliente. No se evalúan tomacorriente, red del cliente, ancho de banda, MTU/rutas, VPN ni cámaras.'
+                        : '📍 Diagnóstico completo: se habilita el protocolo completo, incluyendo energía del tomacorriente, conectividad de la red del cliente, MTU/rutas, acceso remoto/VPN y cámaras.';
             }
             actualizarSemaforoSalud();
             dispararAutoguardado();
@@ -1681,44 +1792,36 @@
         }
 
         function evaluarVoltajesBIOSAutomaticamente() {
+            // Solo se automatizan rieles con referencia eléctrica fija.
+            // Vcore, SoC y VDD/VDIMM requieren validación contra CPU/placa/perfil del fabricante.
             const reglas = [
-                { id: 'bios_12v_val', radio: 'bios_12v_status', min: 11.40, max: 12.60, label: '+12V' },
-                { id: 'bios_5v_val', radio: 'bios_5v_status', min: 4.75, max: 5.25, label: '+5V' },
-                { id: 'bios_3v3_val', radio: 'bios_3v3_status', min: 3.135, max: 3.465, label: '+3.3V' },
-                { id: 'bios_vcore_val', radio: 'bios_vcore_status', min: 0.80, max: 1.40, label: 'CPU Core Voltage (Vcore)' },
-                { id: 'bios_soc_val', radio: 'bios_soc_status', min: 0.90, max: 1.25, label: 'CPU SOC / Chipset' },
-                { id: 'bios_vdimm_val', radio: 'bios_vdimm_status', min: 1.14, max: 1.26, label: 'Memory Voltage (VDD / VDIMM)' }
+                { id: 'bios_12v_val', radio: 'bios_12v_status', min: 11.40, max: 12.60 },
+                { id: 'bios_5v_val', radio: 'bios_5v_status', min: 4.75, max: 5.25 },
+                { id: 'bios_3v3_val', radio: 'bios_3v3_status', min: 3.135, max: 3.465 }
             ];
-
             reglas.forEach(r => {
-                const input = document.getElementById(r.id);
-                const n = obtenerNumeroVoltaje(input?.value);
+                const n = obtenerNumeroVoltaje(document.getElementById(r.id)?.value);
                 if (n === null) return;
                 establecerEstatusVoltaje(r.radio, n >= r.min && n <= r.max);
             });
-
             document.querySelectorAll('.bios-extra-voltage').forEach(item => {
                 const ref = item.querySelector('.bios-extra-ref')?.value || '';
                 const val = obtenerNumeroVoltaje(item.querySelector('.bios-extra-val')?.value);
                 if (val === null) return;
-
                 const nums = String(ref).replace(',', '.').match(/\d+(?:\.\d+)?/g) || [];
                 let min = null, max = null;
                 if (nums.length >= 2) {
-                    min = parseFloat(nums[0]);
-                    max = parseFloat(nums[1]);
+                    min = parseFloat(nums[0]); max = parseFloat(nums[1]);
                 } else if (nums.length === 1) {
                     const nominal = parseFloat(nums[0]);
                     const tolerance = Math.abs(nominal) * 0.05;
-                    min = nominal - tolerance;
-                    max = nominal + tolerance;
+                    min = nominal - tolerance; max = nominal + tolerance;
                 }
-
                 if (min !== null && max !== null) {
                     const correcto = val >= Math.min(min, max) && val <= Math.max(min, max);
-                    const radios = item.querySelectorAll('input[type="radio"]');
-                    const target = [...radios].find(r => r.value === (correcto ? 'CORRECTO' : 'FALLA'));
-                    if (target && (val < Math.min(min, max) || val > Math.max(min, max))) target.checked = true;
+                    const target = [...item.querySelectorAll('input[type="radio"]')]
+                        .find(r => r.value === (correcto ? 'CORRECTO' : 'FALLA'));
+                    if (target) target.checked = true;
                 }
             });
         }
@@ -1745,150 +1848,147 @@
         }
 
         // --- SISTEMA DE SEMÁFORO DE SALUD EN VIVO ---
-        function calcularSemaforoPonderadoDesdeFormulario() {
+        function calcularSemaforoPonderadoDesdeDatos(datos) {
+            const modo = datos?.modoReporte || 'completo';
+            if (modo === 'inventario') return { score: null, nivel: 'INVENTARIO', fallas: [], penalizacion: 0, pesoAplicable: 0 };
+
+            const p = datos?.pruebasFijas || {};
+            const discos = Array.isArray(datos?.discosFisicos) ? datos.discosFisicos : [];
+            const camaras = Array.isArray(datos?.camarasIP) ? datos.camarasIP : [];
+            const esLaboratorio = modo === 'laboratorio';
             const fallas = [];
             let penalizacion = 0;
+            let pesoAplicable = 0;
 
-            const registrar = (condicion, puntos, mensaje, gravedad = 'MEDIA') => {
+            const registrar = (aplica, condicion, puntos, mensaje, gravedad='MEDIA') => {
+                if (!aplica) return;
+                pesoAplicable += puntos;
                 if (condicion) {
                     penalizacion += puntos;
                     fallas.push({ mensaje, puntos, gravedad });
                 }
             };
 
-            // 1.1 - Mediciones eléctricas de entrada: falla importante, pero no crítica por sí sola.
-            ['fn', 'ft', 'nt'].forEach(v => {
-                const st = document.querySelector(`input[name="chk_volt_${v}"]:checked`);
-                registrar(st && st.value !== 'ESTABLE', 7,
+            // Completo: energía de entrada.
+            ['fn','ft','nt'].forEach(v => {
+                const st = p[`volt_${v}_status`];
+                registrar(!esLaboratorio, st && st !== 'ESTABLE', 7,
                     `Voltaje ${v === 'nt' ? 'Neutro-Tierra' : v.toUpperCase()} anómalo`, 'ALTA');
             });
 
-            // 1.2 - BIOS/UEFI: alimentación y tensiones internas.
-            const biosChecks = [
-                ['bios_12v_status', '+12V', 15],
-                ['bios_5v_status', '+5V', 12],
-                ['bios_3v3_status', '+3.3V', 12],
-                ['bios_vcore_status', 'CPU Core Voltage (Vcore)', 18],
-                ['bios_soc_status', 'CPU SOC / Chipset', 16],
-                ['bios_vdimm_status', 'Memory Voltage (VDD / VDIMM)', 16]
-            ];
-            biosChecks.forEach(([name, label, puntos]) => {
-                const st = document.querySelector(`input[name="${name}"]:checked`);
-                registrar(st && st.value === 'FALLA', puntos, `Voltaje BIOS/UEFI ${label} fuera de referencia`, 'ALTA');
+            // Laboratorio y completo: BIOS/UEFI.
+            [
+                ['bios_12v_status','+12V',15], ['bios_5v_status','+5V',12],
+                ['bios_3v3_status','+3.3V',12], ['bios_vcore_status','CPU Core Voltage (Vcore)',18],
+                ['bios_soc_status','CPU SOC / Chipset',16], ['bios_vdimm_status','Memory Voltage (VDD / VDIMM)',16]
+            ].forEach(([key,label,puntos]) => {
+                registrar(true, p[key] === 'FALLA', puntos,
+                    `Voltaje BIOS/UEFI ${label} fuera de referencia`, puntos >= 18 ? 'CRÍTICA' : 'ALTA');
             });
-            document.querySelectorAll('.bios-extra-voltage').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value === 'FALLA', 14, `Voltaje BIOS/UEFI adicional #${idx + 1} en falla`, 'ALTA');
+            (p.bios_extra_voltages || []).forEach((v,idx) => {
+                registrar(true, v.status === 'FALLA', 14, `Voltaje BIOS/UEFI adicional #${idx+1} en falla`, 'ALTA');
             });
 
-            // 1.3 - Ping: degradación leve. Un ping malo no debe hundir el estado.
-            const pingVal = document.querySelector('input[name="chk_ping_cc"]:checked');
-            registrar(pingVal && pingVal.value !== 'PASA', 3,
+            // Solo completo: pruebas dependientes de infraestructura del cliente.
+            registrar(!esLaboratorio, p.ping_cc_status && p.ping_cc_status !== 'PASA', 3,
                 'Ping 100 paquetes con latencia/pérdida fuera de condición', 'BAJA');
+            (p.ping_extras || []).forEach((pe,idx) => {
+                registrar(!esLaboratorio, pe.status !== 'PASA', 2, `Ping adicional #${idx+1} con falla`, 'BAJA');
+            });
+            (p.extraPorts || []).forEach((ep,idx) => {
+                registrar(true, ep.status === 'CERRADO' || ep.status === 'FALLA', 3,
+                    `Socket/Puerto adicional #${idx+1} (${ep.num || 'sin identificar'}) con falla`, 'BAJA');
+            });
+            registrar(!esLaboratorio, p.net_upload_status === 'SATURADO', 6, 'Ancho de banda de subida saturado', 'MEDIA');
+            registrar(!esLaboratorio, p.net_download_status === 'SATURADO', 6, 'Ancho de banda de descarga saturado', 'MEDIA');
+            registrar(!esLaboratorio, p.mtu_status && p.mtu_status !== 'ÓPTIMO', 4, 'MTU requiere ajuste', 'BAJA');
+            (p.mtu_extras || []).forEach((me,idx) => {
+                registrar(!esLaboratorio, me.status !== 'ÓPTIMO', 3, `Ruta MTU adicional #${idx+1} requiere ajuste`, 'BAJA');
+            });
+            registrar(!esLaboratorio, p.remote_access_status === 'FALLA', 4,
+                'Acceso remoto/VPN no configurado o con incidencia', 'MEDIA');
 
-            document.querySelectorAll('.ping-extra-item').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value !== 'PASA', 2, `Ping adicional #${idx + 1} con falla`, 'BAJA');
+            // Laboratorio y completo: NTP.
+            registrar(true, p.ntp_status && p.ntp_status !== 'CORRECTO', 5, 'Sincronización horaria NTP con incidencia', 'MEDIA');
+
+            // Laboratorio y completo: almacenamiento.
+            if (discos.length) {
+                const pesoTotalDiscos = 35;
+                const pesoPorDisco = pesoTotalDiscos / discos.length;
+                discos.forEach((d,idx) => {
+                    const estado = String(d?.status || '').toUpperCase();
+                    registrar(true, estado === 'FALLA' || estado === 'FAIL', pesoPorDisco,
+                        `Disco físico #${idx+1} en FALLA — riesgo directo de pérdida/interrupción de grabaciones CCTV`, 'CRÍTICA');
+                    if (estado === 'ALERTA' || estado === 'ALERT' || estado === 'ADVERTENCIA') {
+                        const puntos = Math.min(pesoPorDisco, pesoPorDisco * 0.65);
+                        penalizacion += puntos;
+                        fallas.push({ puntos, gravedad:'ALTA',
+                            mensaje:`Disco físico #${idx+1} en ALERTA — riesgo de degradación de almacenamiento y continuidad de grabación` });
+                    }
+                });
+            }
+
+            registrar(true, p.cpu_status === 'SATURADO', 25, 'CPU saturado — impacto directo en procesamiento del servidor CCTV', 'CRÍTICA');
+            registrar(true, p.ram_status === 'SATURADO', 22, 'Memoria RAM saturada — riesgo de degradación del servicio', 'CRÍTICA');
+            registrar(true, p.gpu_status === 'SATURADO', 25, 'GPU / Codec saturado — impacto directo en procesamiento/decodificación CCTV', 'CRÍTICA');
+            (p.gpu_extras || []).forEach((g,idx) => {
+                registrar(true, g.status === 'SATURADO', 20, `GPU adicional #${idx+1} saturada — impacto en procesamiento/decodificación CCTV`, 'CRÍTICA');
             });
 
-            // 1.4 - Ancho de banda.
-            const upNet = document.querySelector('input[name="chk_upload_net_status"]:checked');
-            const downNet = document.querySelector('input[name="chk_download_net_status"]:checked');
-            registrar(upNet && upNet.value === 'SATURADO', 6, 'Ancho de banda de subida saturado', 'MEDIA');
-            registrar(downNet && downNet.value === 'SATURADO', 6, 'Ancho de banda de descarga saturado', 'MEDIA');
-
-            // 1.5 - MTU.
-            const mtu = document.querySelector('input[name="chk_mtu_status"]:checked');
-            registrar(mtu && mtu.value !== 'ÓPTIMO', 4, 'MTU requiere ajuste', 'BAJA');
-
-            document.querySelectorAll('.mtu-extra-item').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value !== 'ÓPTIMO', 3, `Ruta MTU adicional #${idx + 1} requiere ajuste`, 'BAJA');
+            registrar(true, p.event_logs_status && p.event_logs_status !== 'LIMPIO', 10, 'Errores críticos en Visor de Eventos', 'ALTA');
+            registrar(true, p.temp_status && p.temp_status !== 'NORMAL', 25,
+                'Temperatura de hardware fuera de condición normal — riesgo de protección térmica y pérdida de rendimiento', 'CRÍTICA');
+            (p.log_critico_extras || []).forEach((x,idx) => {
+                registrar(true, x.status === 'ERRORES', 10, `Log crítico adicional #${idx+1} con errores`, 'ALTA');
             });
-
-            // Hardware - discos: el peso del almacenamiento se reparte entre todos los discos.
-            const discosFormulario = [...document.querySelectorAll('.disk-item')].map(item => ({
-                status: item.querySelector('input[type="radio"]:checked')?.value || 'SANO'
-            }));
-            calcularPenalizacionDiscos(discosFormulario).forEach(f => registrar(true, f.puntos, f.mensaje, f.gravedad));
-
-            // Hardware - carga: fallas críticas.
-            const cpuSt = document.querySelector('input[name="chk_cpu_status"]:checked');
-            const ramSt = document.querySelector('input[name="chk_ram_status"]:checked');
-            const gpuSt = document.querySelector('input[name="chk_gpu_status"]:checked');
-            registrar(cpuSt && cpuSt.value === 'SATURADO', 25, 'CPU saturado — impacto directo en procesamiento del servidor CCTV', 'CRÍTICA');
-            registrar(ramSt && ramSt.value === 'SATURADO', 22, 'Memoria RAM saturada — riesgo de degradación del servicio', 'CRÍTICA');
-            registrar(gpuSt && gpuSt.value === 'SATURADO', 25, 'GPU / Codec saturado — impacto directo en procesamiento/decodificación CCTV', 'CRÍTICA');
-            document.querySelectorAll('.gpu-extra-row').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value === 'SATURADO', 20, `GPU adicional #${idx + 1} saturada — impacto en procesamiento/decodificación CCTV`, 'CRÍTICA');
-            });
-
-            // Logs / temperatura / software.
-            const logSt = document.querySelector('input[name="chk_event_logs"]:checked');
-            const tempSt = document.querySelector('input[name="chk_temp_status"]:checked');
-            const avSt = document.querySelector('input[name="chk_av_status"]:checked');
-            const licSt = document.querySelector('input[name="chk_lic_status"]:checked');
-            registrar(logSt && logSt.value !== 'LIMPIO', 10, 'Errores críticos en Visor de Eventos', 'ALTA');
-            registrar(tempSt && tempSt.value !== 'NORMAL', 25, 'Temperatura de hardware fuera de condición normal — riesgo de protección térmica y pérdida de rendimiento', 'CRÍTICA');
-            registrar(avSt && avSt.value !== 'CONFIGURADO', 3, 'Exclusiones de Antivirus pendientes', 'BAJA');
-            registrar(licSt && licSt.value !== 'CORRECTO', 4, 'Incidencia en licenciamiento', 'MEDIA');
-            document.querySelectorAll('.log-critico-extra-row').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value === 'ERRORES', 10, `Log crítico adicional #${idx + 1} con errores`, 'ALTA');
-            });
-            document.querySelectorAll('.temp-extra-row').forEach((item, idx) => {
-                const raw = item.querySelector('.temp-val-custom')?.value || '';
-                const m = String(raw).replace(',', '.').match(/-?\d+(?:\.\d+)?/);
+            (p.temp_extras || []).forEach((x,idx) => {
+                const m = String(x.val || '').replace(',','.').match(/-?\d+(?:\.\d+)?/);
                 const n = m ? parseFloat(m[0]) : null;
                 if (n !== null) {
-                    registrar(n >= 85, 20, `Temperatura adicional #${idx + 1} crítica (${n} °C)`, 'CRÍTICA');
-                    registrar(n >= 75 && n < 85, 12, `Temperatura adicional #${idx + 1} elevada (${n} °C)`, 'ALTA');
+                    registrar(true, n >= 85, 20, `Temperatura adicional #${idx+1} crítica (${n} °C)`, 'CRÍTICA');
+                    if (n >= 75 && n < 85) {
+                        penalizacion += 12;
+                        fallas.push({ puntos:12, gravedad:'ALTA', mensaje:`Temperatura adicional #${idx+1} elevada (${n} °C)` });
+                    }
                 }
             });
 
-            // Software GeoVision / Windows: incidencias que afectan directamente la operación CCTV.
-            const gvLogSt = document.querySelector('input[name="chk_sw_gv_events"]:checked');
-            const ctrlSt = document.querySelector('input[name="chk_sw_ctrl"]:checked');
-            const updSt = document.querySelector('input[name="chk_sw_upd"]:checked');
-            registrar(gvLogSt && gvLogSt.value === 'ERROR', 12, 'Errores en Log de eventos de GeoVision', 'ALTA');
-            registrar(ctrlSt && ctrlSt.value === 'ERROR', 8, 'Error en controlador/componente de soporte', 'ALTA');
-            registrar(updSt && updSt.value === 'ERROR', 5, 'Actualización de sistema/componente pendiente o fallida', 'MEDIA');
-            document.querySelectorAll('.log-gv-extra-row').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value === 'ERROR', 10, `Log GeoVision adicional #${idx + 1} con error`, 'ALTA');
-            });
-            document.querySelectorAll('.ctrl-extra-row').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value === 'ERROR', 7, `Controlador adicional #${idx + 1} con error`, 'ALTA');
-            });
-            document.querySelectorAll('.upd-extra-row').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value === 'ERROR', 5, `Actualización adicional #${idx + 1} con error`, 'MEDIA');
-            });
-            document.querySelectorAll('.lic-extra-row').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && st.value === 'ERROR', 4, `Licenciamiento adicional #${idx + 1} con error`, 'MEDIA');
-            });
+            // Laboratorio y completo: software/GeoVision.
+            registrar(true, p.av_status && p.av_status !== 'CONFIGURADO', 3, 'Exclusiones de Antivirus pendientes', 'BAJA');
+            registrar(true, p.lic_status && p.lic_status !== 'CORRECTO', 4, 'Incidencia en licenciamiento', 'MEDIA');
+            registrar(true, p.sw_gv_events_status && p.sw_gv_events_status !== 'CORRECTO', 12, 'Errores en Log de eventos de GeoVision', 'ALTA');
+            registrar(true, p.sw_ctrl_status && p.sw_ctrl_status !== 'CORRECTO', 8, 'Error en controlador/componente de soporte', 'ALTA');
+            registrar(true, p.sw_upd_status && p.sw_upd_status !== 'CORRECTO', 5, 'Actualización de sistema/componente pendiente o fallida', 'MEDIA');
+            (p.sw_gv_extras || []).forEach((x,idx) => registrar(true, x.status === 'ERROR', 10, `Log GeoVision adicional #${idx+1} con error`, 'ALTA'));
+            (p.sw_ctrl_extras || []).forEach((x,idx) => registrar(true, x.status === 'ERROR', 7, `Controlador adicional #${idx+1} con error`, 'ALTA'));
+            (p.sw_upd_extras || []).forEach((x,idx) => registrar(true, x.status === 'ERROR', 5, `Actualización adicional #${idx+1} con error`, 'MEDIA'));
+            (p.lic_extras || []).forEach((x,idx) => registrar(true, x.status === 'ERROR', 4, `Licenciamiento adicional #${idx+1} con error`, 'MEDIA'));
 
-            // Interfaces / cámaras / puertos adicionales.
-            document.querySelectorAll('.port-extra-row').forEach((item, idx) => {
-                const st = item.querySelector('input[type="radio"]:checked');
-                registrar(st && (st.value === 'CERRADO' || st.value === 'FALLA'), 3, `Socket/Puerto adicional #${idx + 1} con falla`, 'BAJA');
-            });
-            document.querySelectorAll('.cam-item').forEach((item, idx) => {
-                const st = item.querySelector('input[name*="chk_cam_status_"]:checked');
-                registrar(st && st.value === 'FALLO', 15, `Cámara IP #${idx + 1} con falla — afecta disponibilidad de video`, 'ALTA');
-            });
+            // Cámaras: únicamente diagnóstico completo.
+            if (!esLaboratorio) {
+                camaras.forEach((c,idx) => registrar(true, c.status === 'FALLO', 15,
+                    `Cámara IP #${idx+1} con falla — afecta disponibilidad de video`, 'ALTA'));
+            }
 
-            const score = Math.max(0, Math.round(100 - Math.min(100, penalizacion)));
+            const score = pesoAplicable > 0 ? Math.max(0, Math.round(100 - (penalizacion / pesoAplicable) * 100)) : 100;
             const hayCritica = fallas.some(f => f.gravedad === 'CRÍTICA');
             let nivel = 'SANO';
             if (hayCritica || score < 50) nivel = 'CRÍTICO';
             else if (score < 70) nivel = 'PRECAUCIÓN';
             else if (score < 90) nivel = 'ATENCIÓN';
+            return { score, nivel, fallas, penalizacion, pesoAplicable };
+        }
 
-            return { score, nivel, fallas, penalizacion };
+        function calcularSemaforoPonderadoDesdeFormulario() {
+            const modo = document.querySelector('input[name="modo-reporte"]:checked')?.value || 'completo';
+            if (modo === 'inventario') return { score:null, nivel:'INVENTARIO', fallas:[], penalizacion:0, pesoAplicable:0 };
+            evaluarVoltajesBIOSAutomaticamente();
+            return calcularSemaforoPonderadoDesdeDatos({
+                modoReporte: modo,
+                pruebasFijas: capturarPruebasFijasServidorActual(),
+                discosFisicos: extraerDiscos(),
+                camarasIP: modo === 'completo' ? extraerCamaras() : []
+            });
         }
 
         function actualizarSemaforoSalud() {
@@ -1903,17 +2003,15 @@
                 return;
             }
 
-            evaluarVoltajesBIOSAutomaticamente();
             const resultado = calcularSemaforoPonderadoDesdeFormulario();
-            const { score, nivel, fallas } = resultado;
+            const { score, nivel, fallas, pesoAplicable } = resultado;
 
             if (fallas.length === 0) {
                 badge.className = "bg-emerald-600 text-white px-2.5 py-0.5 rounded-full text-xs font-bold";
                 badge.innerText = "100% Sano";
-                summary.innerHTML = "<span class='text-emerald-400 font-semibold'>✔ Sin alertas. Todos los parámetros evaluados se encuentran dentro de condición.</span>";
+                summary.innerHTML = `<span class='text-emerald-400 font-semibold'>✔ Sin alertas. ${modo === 'laboratorio' ? 'Solo se ponderaron las pruebas habilitadas para laboratorio.' : 'Se ponderaron todas las pruebas del diagnóstico completo.'} Peso máximo evaluado: ${Math.round(pesoAplicable * 10) / 10}.</span>`;
                 return;
-            }
-
+            
             let clase = "bg-amber-600";
             let texto = "Precaución";
             let color = "text-amber-300";
@@ -1933,7 +2031,10 @@
 
 
         // --- AUTOGUARDADO EN LOCALSTORAGE ---
+        let guardandoAutoguardado = false;
         function dispararAutoguardado() {
+            if (guardandoAutoguardado) return;
+            guardandoAutoguardado = true;
             actualizarSemaforoSalud();
             const formData = {
                 techName: document.getElementById('tech-name').value,
@@ -1941,6 +2042,7 @@
                 endClientName: document.getElementById('end-client-name').value,
                 physicalAddress: document.getElementById('physical-address').value,
                 gpsCoords: document.getElementById('gps-coords').value,
+                modoReporteSeleccionado: document.querySelector('input[name="modo-reporte"]:checked')?.value || 'laboratorio',
                 srvName: document.getElementById('srv-name').value,
                 srvIp: document.getElementById('srv-ip').value,
                 srvOs: document.getElementById('srv-os').value,
@@ -1973,6 +2075,7 @@
                 console.error('No fue posible capturar las pruebas del servidor en edición para el autoguardado:', e);
             }
             localStorage.setItem('geovision_diag_autosave_v3_5', JSON.stringify(formData));
+            guardandoAutoguardado = false;
         }
 
         function cargarProgresoLocal() {
@@ -1985,6 +2088,10 @@
                 if (data.endClientName) document.getElementById('end-client-name').value = data.endClientName;
                 if (data.physicalAddress) document.getElementById('physical-address').value = data.physicalAddress;
                 if (data.gpsCoords) document.getElementById('gps-coords').value = data.gpsCoords;
+                if (data.modoReporteSeleccionado) {
+                    const modoGuardado = document.querySelector(`input[name="modo-reporte"][value="${data.modoReporteSeleccionado}"]`);
+                    if (modoGuardado) { modoGuardado.checked = true; cambiarModoReporte(data.modoReporteSeleccionado); }
+                }
                 if (data.srvName) document.getElementById('srv-name').value = data.srvName;
                 if (data.srvIp) document.getElementById('srv-ip').value = data.srvIp;
                 if (data.srvOs) document.getElementById('srv-os').value = data.srvOs;
@@ -2093,6 +2200,7 @@
                         </div>
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" placeholder="Observaciones..." class="ping-obs-custom w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                     <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -2158,6 +2266,7 @@
                             </div>
                         </div>
                     </div>
+                    <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                     <input type="text" placeholder="Observaciones..." class="mtu-obs-custom w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 </div>
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
@@ -2292,6 +2401,7 @@
                         </div>
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" placeholder="Observaciones..." class="log-obs-custom w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                     <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -2351,6 +2461,7 @@
                         </div>
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" placeholder="Observaciones..." class="log-obs-custom w-full bg-[#122f4a] border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                     <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -2403,6 +2514,7 @@
                         <button type="button" onclick="document.getElementById('ctrl_extra_${id}').remove(); dispararAutoguardado();" class="text-rose-400 text-[9px] font-bold bg-rose-500/10 px-2 py-1 rounded">Remover X</button>
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" placeholder="Observaciones..." class="ctrl-obs-custom w-full bg-slate-700 border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                     <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -2454,6 +2566,7 @@
                         <button type="button" onclick="document.getElementById('upd_extra_${id}').remove(); dispararAutoguardado();" class="text-rose-400 text-[9px] font-bold bg-rose-500/10 px-2 py-1 rounded">Remover X</button>
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" placeholder="Observaciones..." class="upd-obs-custom w-full bg-slate-700 border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                     <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -2522,6 +2635,7 @@
                         <input type="text" placeholder="SN-..." class="lic-num-custom w-full bg-slate-700 border border-slate-600 p-1.5 rounded text-white font-mono focus:outline-none">
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" placeholder="Observaciones..." class="lic-obs-custom w-full bg-slate-700 border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                     <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -2905,6 +3019,7 @@
                             <label class="status-btn"><input type="radio" name="chk_cam_status_${id}" value="FALLO" class="sr-only"><span class="block text-center bg-slate-900 text-[10px] py-1 rounded font-bold text-rose-400">FALLO</span></label>
                         </div>
                     </div>
+                    <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                     <input type="text" placeholder="Observaciones..." class="cam-obs w-full bg-slate-700 border border-slate-600 text-xs p-1.5 rounded text-white focus:outline-none">
                 </div>
             </div>
@@ -2995,6 +3110,7 @@
                         <label class="status-btn"><input type="radio" name="chk_disk_${id}" value="FALLA" class="sr-only disk-status"><span class="block text-center bg-slate-700 text-[9px] py-1 rounded font-bold text-rose-400">FALLA</span></label>
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" class="disk-obs w-full bg-slate-700 text-[10px] p-1.5 rounded text-white focus:outline-none" placeholder="Observaciones...">
                 <div class="evidence-slot bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between text-[9px] mt-1.5">
                     <span class="text-slate-300 font-bold whitespace-nowrap mr-1">📸 Evidencia:</span>
@@ -3053,6 +3169,7 @@
                         </div>
                     </div>
                 </div>
+                <label class="block text-[10px] text-slate-300 mb-0.5">Observaciones</label>
                 <input type="text" class="bios-extra-obs w-full bg-slate-700 text-[10px] p-1.5 rounded text-white" placeholder="Observación...">
             `;
             wrapper.appendChild(row);
@@ -3100,7 +3217,8 @@
             document.getElementById('wrapper-discos').innerHTML = getDiskTemplate(contadorDiscos, false);
             crearFilaPuerto();
             actualizarSelectsGruposAlmacenamiento();
-            
+            prepararPruebasPorModo();
+            cambiarModoReporte(document.querySelector('input[name="modo-reporte"]:checked')?.value || 'laboratorio');
             cargarProgresoLocal();
         });
 
@@ -3358,7 +3476,7 @@
                 <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700 flex justify-between items-center shadow-md">
                     <div>
                         <p class="font-bold text-slate-100 text-sm">${escaparHTML(s.nombre)} <span class="text-xs text-sky-300 font-normal">[IP: ${escaparHTML(s.ip)}]</span></p>
-                        <p class="text-[10px] text-slate-300">Modo: ${s.modoReporte === 'inventario' ? '📋 Inventario' : '🔧 Diagnóstico'} | Grupos: ${(s.gruposAlmacenamiento || []).length} | Discos: ${(s.discosFisicos || []).length} | Cámaras: ${s.camarasIP.length}</p>
+                        <p class="text-[10px] text-slate-300">Modo: ${s.modoReporte === 'inventario' ? '📋 Inventario' : (s.modoReporte === 'laboratorio' ? '🧪 Laboratorio' : '📍 Diagnóstico completo')} | Grupos: ${(s.gruposAlmacenamiento || []).length} | Discos: ${(s.discosFisicos || []).length} | Cámaras: ${s.camarasIP.length}</p>
                     </div>
                     <button onclick="removerServidorLista(${idx})" class="text-rose-400 bg-rose-500/10 px-2 py-1.5 rounded-lg text-xs font-bold">Eliminar</button>
                 </div>
@@ -3458,123 +3576,32 @@
         `;
 
         function calcularSaludServidorPDF(srv) {
-            if (srv.modoReporte === 'inventario') {
+            if (!srv || srv.modoReporte === 'inventario') {
                 return {
-                    badgeStyle: "background-color: #0284c7; color: white;",
-                    badgeText: "MODO INVENTARIO",
-                    alertas: ["Levantamiento físico activo. Sin matriz de fallas requerida."],
-                    score: null,
-                    penalizacion: 0
+                    badgeStyle:"background-color:#0284c7;color:white;",
+                    badgeText:"MODO INVENTARIO",
+                    alertas:["Levantamiento físico activo. Sin matriz de fallas requerida."],
+                    score:null, penalizacion:0, pesoAplicable:0, fallas:[]
                 };
             }
-
-            const p = srv.pruebasFijas || {};
-            const alertasDetectadas = [];
-            let penalizacion = 0;
-
-            const registrar = (condicion, puntos, mensaje, gravedad = 'MEDIA') => {
-                if (condicion) {
-                    penalizacion += puntos;
-                    alertasDetectadas.push({ mensaje, puntos, gravedad });
-                }
-            };
-
-            ['fn', 'ft', 'nt'].forEach(v => {
-                const key = `volt_${v}_status`;
-                registrar(p[key] && p[key] !== 'ESTABLE', 8,
-                    `Voltaje ${v === 'nt' ? 'Neutro-Tierra' : v.toUpperCase()} anómalo`, 'ALTA');
+            const r = calcularSemaforoPonderadoDesdeDatos({
+                modoReporte:srv.modoReporte,
+                pruebasFijas:srv.pruebasFijas || {},
+                discosFisicos:srv.discosFisicos || [],
+                camarasIP:srv.modoReporte === 'completo' ? (srv.camarasIP || []) : []
             });
-
-            const biosPdfChecks = [
-                ['bios_12v_status', '+12V', 15], ['bios_5v_status', '+5V', 12],
-                ['bios_3v3_status', '+3.3V', 12], ['bios_vcore_status', 'CPU Core Voltage (Vcore)', 18],
-                ['bios_soc_status', 'CPU SOC / Chipset', 16], ['bios_vdimm_status', 'Memory Voltage (VDD / VDIMM)', 16]
-            ];
-            biosPdfChecks.forEach(([key, label, puntos]) => {
-                registrar(p[key] === 'FALLA', puntos, `Voltaje BIOS/UEFI ${label} fuera de referencia`, puntos >= 18 ? 'CRÍTICA' : 'ALTA');
-            });
-            (p.bios_extra_voltages || []).forEach((v, idx) => {
-                registrar(v.status === 'FALLA', 14, `Voltaje BIOS/UEFI adicional #${idx + 1} en falla`, 'ALTA');
-            });
-
-            registrar(p.ping_cc_status && p.ping_cc_status !== 'PASA', 3,
-                'Ping 100 paquetes con latencia/pérdida fuera de condición', 'BAJA');
-            (p.ping_extras || []).forEach((pe, idx) => {
-                registrar(pe.status !== 'PASA', 2, `Ping adicional #${idx + 1} con falla`, 'BAJA');
-            });
-
-            (p.extraPorts || []).forEach((ep, idx) => {
-                registrar(ep.status === 'CERRADO' || ep.status === 'FALLA', 3,
-                    `Socket/Puerto adicional #${idx + 1} (${ep.num || 'sin identificar'}) con falla`, 'BAJA');
-            });
-
-            registrar(p.net_upload_status === 'SATURADO', 6, 'Ancho de banda de subida saturado', 'MEDIA');
-            registrar(p.net_download_status === 'SATURADO', 6, 'Ancho de banda de descarga saturado', 'MEDIA');
-            registrar(p.mtu_status && p.mtu_status !== 'ÓPTIMO', 4, 'MTU requiere ajuste', 'BAJA');
-            (p.mtu_extras || []).forEach((me, idx) => {
-                registrar(me.status !== 'ÓPTIMO', 3, `Ruta MTU adicional #${idx + 1} requiere ajuste`, 'BAJA');
-            });
-
-            calcularPenalizacionDiscos(srv.discosFisicos || []).forEach(f => registrar(true, f.puntos, f.mensaje, f.gravedad));
-
-            registrar(p.cpu_status === 'SATURADO', 25, 'CPU saturado — impacto directo en procesamiento del servidor CCTV', 'CRÍTICA');
-            registrar(p.ram_status === 'SATURADO', 22, 'Memoria RAM saturada — riesgo de degradación del servicio', 'CRÍTICA');
-            registrar(p.gpu_status === 'SATURADO', 25, 'GPU / Codec saturado — impacto directo en procesamiento/decodificación CCTV', 'CRÍTICA');
-
-            registrar(p.event_logs_status && p.event_logs_status !== 'LIMPIO', 10,
-                'Errores críticos en Visor de Eventos', 'ALTA');
-            registrar(p.temp_status && p.temp_status !== 'NORMAL', 25,
-                'Temperatura de hardware fuera de condición normal — riesgo de protección térmica y pérdida de rendimiento', 'CRÍTICA');
-            registrar(p.av_status && p.av_status !== 'CONFIGURADO', 3,
-                'Exclusiones de Antivirus pendientes', 'BAJA');
-            registrar(p.lic_status && p.lic_status !== 'CORRECTO', 6,
-                'Incidencia en licenciamiento', 'MEDIA');
-            registrar(p.sw_gv_events_status && p.sw_gv_events_status !== 'CORRECTO', 12,
-                'Errores en Log de eventos de GeoVision', 'ALTA');
-            registrar(p.sw_ctrl_status && p.sw_ctrl_status !== 'CORRECTO', 8,
-                'Error en controlador/componente de soporte', 'ALTA');
-            registrar(p.sw_upd_status && p.sw_upd_status !== 'CORRECTO', 5,
-                'Actualización de sistema/componente pendiente o fallida', 'MEDIA');
-            (p.sw_gv_extras || []).forEach((x, idx) => {
-                registrar(x.status === 'ERROR', 10, `Log GeoVision adicional #${idx + 1} con error`, 'ALTA');
-            });
-            (p.sw_ctrl_extras || []).forEach((x, idx) => {
-                registrar(x.status === 'ERROR', 7, `Controlador adicional #${idx + 1} con error`, 'ALTA');
-            });
-            (p.sw_upd_extras || []).forEach((x, idx) => {
-                registrar(x.status === 'ERROR', 5, `Actualización adicional #${idx + 1} con error`, 'MEDIA');
-            });
-            (srv.camarasIP || []).forEach((c, idx) => {
-                registrar(c.status === 'FALLO', 15, `Cámara IP #${idx + 1} con falla — afecta disponibilidad de video`, 'ALTA');
-            });
-            (p.lic_extras || []).forEach((x, idx) => {
-                registrar(x.status === 'ERROR', 4, `Licenciamiento adicional #${idx + 1} con error`, 'MEDIA');
-            });
-
-            const score = Math.max(0, Math.round(100 - Math.min(100, penalizacion)));
-            const hayCritica = alertasDetectadas.some(a => a.gravedad === 'CRÍTICA');
-            let badgeStyle = "background-color: #16a34a; color: white;";
-            let badgeText = `${score}% Sano`;
-            if (hayCritica || score < 50) {
-                badgeStyle = "background-color: #e11d48; color: white;";
-                badgeText = `${score}% Crítico`;
-            } else if (score < 90 && score >= 70) {
-                badgeStyle = "background-color: #d97706; color: white;";
-                badgeText = `${score}% Atención`;
-            } else if (score < 70 && score >= 40) {
-                badgeStyle = "background-color: #ea580c; color: white;";
-                badgeText = `${score}% Precaución`;
-            }
-
-            const orden = { 'CRÍTICA': 0, 'ALTA': 1, 'MEDIA': 2, 'BAJA': 3 };
-            alertasDetectadas.sort((a, b) => orden[a.gravedad] - orden[b.gravedad]);
-
+            const hayCritica = r.fallas.some(a => a.gravedad === 'CRÍTICA');
+            let badgeStyle="background-color:#16a34a;color:white;";
+            let badgeText=`${r.score}% Sano`;
+            if (hayCritica || r.score < 50) { badgeStyle="background-color:#e11d48;color:white;"; badgeText=`${r.score}% Crítico`; }
+            else if (r.score < 70) { badgeStyle="background-color:#ea580c;color:white;"; badgeText=`${r.score}% Precaución`; }
+            else if (r.score < 90) { badgeStyle="background-color:#d97706;color:white;"; badgeText=`${r.score}% Atención`; }
+            const orden={'CRÍTICA':0,'ALTA':1,'MEDIA':2,'BAJA':3};
+            const fallas=[...r.fallas].sort((a,b)=>orden[a.gravedad]-orden[b.gravedad]);
             return {
-                badgeStyle,
-                badgeText,
-                score,
-                penalizacion,
-                alertas: alertasDetectadas.map(a => `${a.gravedad} — ${a.mensaje} (-${a.puntos}%)`)
+                badgeStyle,badgeText,score:r.score,penalizacion:r.penalizacion,
+                pesoAplicable:r.pesoAplicable,fallas,
+                alertas:fallas.map(a=>`${a.gravedad} — ${a.mensaje} (-${Math.round(a.puntos*10)/10}%)`)
             };
         }
 
@@ -3596,15 +3623,24 @@
             templateMaestroPDF.innerHTML = backendColaServidores.map((srv, index) => {
                 const saludInfo = calcularSaludServidorPDF(srv);
                 let alertasHtml = '';
-                if (srv.modoReporte === 'completo') {
-                    if (saludInfo.alertas.length === 0) {
-                        alertasHtml = `<span style="color: #16a34a; font-weight: bold;">✔ Sin alertas críticas. Todos los parámetros eléctricos, de red y hardware operan correctamente.</span>`;
-                    } else {
-                        alertasHtml = `<span style="color: #b45309; font-weight: bold;">⚠️ Alertas detectadas (${saludInfo.alertas.length}):</span><ul style="margin: 2px 0 0 15px; padding: 0; font-size: 8px;">` + saludInfo.alertas.map(a => `<li>${a}</li>`).join('') + `</ul>`;
-                    }
+                const modoPdfNombre = srv.modoReporte === 'inventario'
+                    ? 'Inventario Técnico'
+                    : (srv.modoReporte === 'laboratorio' ? 'Diagnóstico de Laboratorio' : 'Diagnóstico Completo');
+
+                if (srv.modoReporte === 'inventario') {
+                    alertasHtml = `<span style="color:#0284c7;font-weight:bold;">Levantamiento físico activo. Sin matriz de fallas requerida.</span>`;
+                } else if (saludInfo.fallas.length === 0) {
+                    alertasHtml = `<span style="color:#16a34a;font-weight:bold;">✔ Sin errores encontrados en las pruebas ponderadas para ${modoPdfNombre}.</span>`;
                 } else {
-                    alertasHtml = `<span style="color: #0284c7; font-weight: bold;">Levantamiento físico activo. Sin matriz de fallas requerida.</span>`;
+                    alertasHtml = `<span style="color:#b45309;font-weight:bold;">⚠️ Errores/incidencias encontrados (${saludInfo.fallas.length}):</span>` +
+                        `<ul style="margin:2px 0 0 15px;padding:0;font-size:8px;">` +
+                        saludInfo.fallas.map(a=>`<li><strong>${escaparHTML(a.gravedad)}</strong> — ${escaparHTML(a.mensaje)} <span style="color:#64748b;">(-${Math.round(a.puntos*10)/10}%)</span></li>`).join('') +
+                        `</ul>`;
                 }
+
+                const resumenErroresHtml = srv.modoReporte === 'inventario'
+                    ? `<div style="margin-top:6px;padding:6px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;font-size:8px;color:#1e40af;"><strong>Resumen de errores encontrados:</strong> No aplica en modo inventario; no se ejecutaron pruebas.</div>`
+                    : `<div style="margin-top:6px;padding:6px;background:#fff7ed;border:1px solid #fed7aa;border-radius:4px;font-size:8px;color:#7c2d12;"><strong>Resumen de errores encontrados:</strong> ${saludInfo.fallas.length ? `${saludInfo.fallas.length} incidencia(s) detectada(s) en ${modoPdfNombre}.` : `No se encontraron errores en ${modoPdfNombre}.`}<br><span style="color:#64748b;">Ponderación máxima aplicada: ${Math.round((saludInfo.pesoAplicable||0)*10)/10} · Penalización: ${Math.round((saludInfo.penalizacion||0)*10)/10} · Resultado: ${saludInfo.score}%.</span></div>`;
 
                 let bloqueFotosHtml = '';
                 if (srv.fotosEvidencia && srv.fotosEvidencia.length > 0) {
@@ -3623,7 +3659,7 @@
                 }
 
                 let seccionMatrizFallasHtml = '';
-                if (srv.modoReporte === 'completo') {
+                if (srv.modoReporte === 'completo' || srv.modoReporte === 'laboratorio') {
                     let extraPortsHtml = `[Tipo: ${escaparHTML(srv.pruebasFijas.portTestType)}]`;
                     if (srv.pruebasFijas.extraPorts && srv.pruebasFijas.extraPorts.length > 0) {
                         srv.pruebasFijas.extraPorts.forEach(ep => {
@@ -3720,6 +3756,17 @@
                         </tr>
                     `).join('');
 
+                    const filtrarMatrizPorModo = (html, modo) => {
+                        if (modo !== 'laboratorio') return html;
+                        const ocultarLaboratorio = [
+                            'Voltaje Fase - Neutro', 'Voltaje Fase - Tierra', 'Voltaje Neutro - Tierra',
+                            'Ping (100 Pings)', 'Ping Adicional', 'Ancho de Banda', 'Interfaz Red Extra',
+                            'Verificación MTU', 'MTU (', 'Acceso Remoto', 'Cámara IP', 'Cámaras IP', 'Configuración Cámaras',
+                            'E. Acceso remoto y VPN', 'D. Verificación MTU y rutas', 'C. Ancho de banda de red', 'A. Ping y conectividad ICMP'
+                        ];
+                        return html.replace(/<tr[\s\S]*?<\/tr>/gi, fila => ocultarLaboratorio.some(et => fila.includes(et)) ? '' : fila);
+                    };
+
                     seccionMatrizFallasHtml = `${almacenamientoHtml || ''}` + `
                         <div style="font-weight: bold; color: #122f4a; font-size: 9.5px; margin-top: 10px; margin-bottom: 4px; border-left: 3px solid #E52724; padding-left: 5px;">II. MATRIZ DE DESCARTE DE FALLAS Y PRUEBAS</div>
                         <table style="width: 100%; border-collapse: collapse; font-size: 8.5px;">
@@ -3733,9 +3780,9 @@
                             </thead>
                             <tbody>
                                 ${pdfSeccionBanner('⚡ PRUEBAS ELÉCTRICAS Y BIOS/UEFI')}
-                                ${pdfSubMenu('A. Mediciones eléctricas: Fase–Neutro, Fase–Tierra y Neutro–Tierra')}
+                                ${srv.modoReporte === 'completo' ? pdfSubMenu('A. Mediciones eléctricas: Fase–Neutro, Fase–Tierra y Neutro–Tierra') : ''}
                                 <!-- Capa Eléctrica -->
-                                <tr>
+                                ${srv.modoReporte === 'completo' ? `                                <tr>
                                     <td style="padding: 4px; border: 1px solid #cbd5e1;"><strong>Voltaje Fase - Neutro</strong></td>
                                     <td style="padding: 4px; border: 1px solid #cbd5e1;">Valor: ${escaparHTML(srv.pruebasFijas.volt_fn_val)}</td>
                                     <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: white; background-color: ${srv.pruebasFijas.volt_fn_status === 'ESTABLE' ? '#16a34a' : '#E52724'};">${escaparHTML(srv.pruebasFijas.volt_fn_status)}</td>
@@ -3752,7 +3799,7 @@
                                     <td style="padding: 4px; border: 1px solid #cbd5e1;">Valor: ${escaparHTML(srv.pruebasFijas.volt_nt_val)}</td>
                                     <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: white; background-color: ${srv.pruebasFijas.volt_nt_status === 'ESTABLE' ? '#16a34a' : '#E52724'};">${escaparHTML(srv.pruebasFijas.volt_nt_status)}</td>
                                     <td style="padding: 4px; border: 1px solid #cbd5e1; font-style: italic;">${escaparHTML(srv.pruebasFijas.volt_nt_obs)} ${renderPdfImg(srv.pruebasFijas.volt_nt_foto)}</td>
-                                </tr>
+                                </tr>` : ''}
 
                                 ${pdfSubMenu('B. Voltajes BIOS/UEFI y alimentación interna')}
                                 <!-- Fuente / BIOS-UEFI -->
@@ -3936,12 +3983,13 @@
                             </tbody>
                         </table>
                     `;
+                    seccionMatrizFallasHtml = filtrarMatrizPorModo(seccionMatrizFallasHtml, srv.modoReporte);
                 }
 
                 return `
                 <div class="pdf-server-card border border-[#2B4763] rounded-md p-3.5 bg-white font-sans text-slate-900">
                     <div style="background-color: #2B4763; color: white; padding: 6px 12px; font-weight: bold; font-size: 11px; border-radius: 4px; margin-bottom: 8px;">
-                        EQUIPO EVALUADO #${index + 1}: ${escaparHTML(srv.nombre).toUpperCase()} [Modo: ${srv.modoReporte === 'inventario' ? 'Inventario Técnico' : 'Diagnóstico Completo'}] (Indexación: ${escaparHTML(srv.timestamp)})
+                        EQUIPO EVALUADO #${index + 1}: ${escaparHTML(srv.nombre).toUpperCase()} [Modo: ${modoPdfNombre}] (Indexación: ${escaparHTML(srv.timestamp)})
                     </div>
 
                     <!-- Resumen del Semáforo de Salud en PDF -->
@@ -3954,6 +4002,7 @@
                             <span style="padding: 3px 8px; border-radius: 9999px; font-size: 9px; font-weight: bold; ${saludInfo.badgeStyle}; display: inline-block;">${saludInfo.badgeText}</span>
                         </div>
                     </div>
+                    ${resumenErroresHtml}
                     
                     <div style="font-weight: bold; color: #122f4a; font-size: 9.5px; margin-bottom: 4px; border-left: 3px solid #2B4763; padding-left: 5px;">I. INVENTARIO Y ARQUITECTURA TÉCNICA</div>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px; font-size: 9px;">
@@ -4149,6 +4198,8 @@
                 });
         }
 
-    </script>
+    
+    }
+</script>
 </body>
 </html>
