@@ -2011,7 +2011,8 @@
                 badge.innerText = "100% Sano";
                 summary.innerHTML = `<span class='text-emerald-400 font-semibold'>✔ Sin alertas. ${modo === 'laboratorio' ? 'Solo se ponderaron las pruebas habilitadas para laboratorio.' : 'Se ponderaron todas las pruebas del diagnóstico completo.'} Peso máximo evaluado: ${Math.round(pesoAplicable * 10) / 10}.</span>`;
                 return;
-            
+            }
+
             let clase = "bg-amber-600";
             let texto = "Precaución";
             let color = "text-amber-300";
@@ -4197,9 +4198,6 @@
                     alert('No fue posible generar el PDF. Revise que el navegador tenga acceso a la librería de generación PDF y vuelva a intentarlo.');
                 });
         }
-
-    
-    }
 </script>
 </body>
 </html>
